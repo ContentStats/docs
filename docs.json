@@ -1,5 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
+  "theme": "mint",
   "name": "ContentStats.io",
   "logo": {
     "light": "/wordmark.png",
@@ -9,11 +10,7 @@
   "colors": {
     "primary": "#6798ff",
     "light": "#7da8ff",
-    "dark": "#5a86e0",
-    "background": {
-      "light": "#FFFFFF",
-      "dark": "#0A0A0A"
-    }
+    "dark": "#5a86e0"
   },
   "topbarLinks": [
     {
@@ -25,113 +22,124 @@
     "name": "Get Started",
     "url": "https://contentstats.io/auth/signup"
   },
-  "navigation": [
-    {
-      "group": "Getting Started",
-      "pages": [
-        "index",
-        "quickstart",
-        "authentication",
-        "pricing"
-      ]
-    },
-    {
-      "group": "Platform Guides",
-      "pages": [
-        "guides/tiktok/overview",
-        "guides/tiktok/track-tiktok-videos",
-        "guides/tiktok/tiktok-analytics-api",
-        "guides/tiktok/tiktok-api-alternative",
-        "guides/youtube/overview",
-        "guides/youtube/get-youtube-stats",
-        "guides/youtube/youtube-analytics-alternative",
-        "guides/instagram/overview",
-        "guides/instagram/instagram-analytics-api",
-        "guides/instagram/track-instagram-performance",
-        "guides/instagram/instagram-api-restrictions"
-      ]
-    },
-    {
-      "group": "Use Cases",
-      "pages": [
-        "guides/general/video-performance-tracking",
-        "guides/general/hourly-tracking"
-      ]
-    },
-    {
-      "group": "Resources",
-      "pages": [
-        "faq",
-        "support"
-      ]
-    },
-    {
-      "tab": "API Reference",
-      "pages": [
-        {
-          "group": "API Documentation",
-          "pages": [
-            "api-reference/introduction",
-            "api-reference/errors",
-            "api-reference/rate-limits"
-          ]
-        },
-        {
-          "group": "Videos",
-          "pages": [
-            "api-reference/videos/track-video",
-            "api-reference/videos/list-videos",
-            "api-reference/videos/get-video",
-            "api-reference/videos/stop-video"
-          ]
-        },
-        {
-          "group": "Usage & Billing",
-          "pages": [
-            "api-reference/usage/get-usage"
-          ]
-        }
-      ]
-    },
-    {
-      "tab": "Guides",
-      "pages": [
-        {
-          "group": "Platform Guides",
-          "pages": [
-            "guides/tiktok/overview",
-            "guides/tiktok/track-tiktok-videos",
-            "guides/tiktok/tiktok-analytics-api",
-            "guides/tiktok/tiktok-api-alternative",
-            "guides/youtube/overview",
-            "guides/youtube/get-youtube-stats",
-            "guides/youtube/youtube-analytics-alternative",
-            "guides/instagram/overview",
-            "guides/instagram/instagram-analytics-api",
-            "guides/instagram/track-instagram-performance",
-            "guides/instagram/instagram-api-restrictions"
-          ]
-        },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index",
+          "introduction",
+          "quickstart",
+          "authentication",
+          "pricing"
+        ]
+      },
+      {
+        "group": "Platform Guides",
+        "pages": [
+          "guides/tiktok/overview",
+          "guides/tiktok/track-tiktok-videos",
+          "guides/tiktok/tiktok-analytics-api",
+          "guides/tiktok/tiktok-api-alternative",
+          "guides/youtube/overview",
+          "guides/youtube/get-youtube-stats",
+          "guides/youtube/youtube-analytics-alternative",
+          "guides/instagram/overview",
+          "guides/instagram/instagram-analytics-api",
+          "guides/instagram/track-instagram-performance",
+          "guides/instagram/instagram-api-restrictions"
+        ]
+      },
+      {
+        "group": "Use Cases",
+        "pages": [
+          "guides/general/video-performance-tracking",
+          "guides/general/hourly-tracking",
+          "guides/general/automate-analytics",
+          "guides/general/real-time-analytics"
+        ]
+      },
+      {
+        "group": "Resources",
+        "pages": [
+          "faq",
+          "support"
+        ]
+      }
+    ],
+    "tabs": [
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/errors",
+              "api-reference/rate-limits"
+            ]
+          },
+          {
+            "group": "Videos",
+            "pages": [
+              "api-reference/videos/track-video",
+              "api-reference/videos/list-videos",
+              "api-reference/videos/get-video",
+              "api-reference/videos/stop-video"
+            ]
+          },
+          {
+            "group": "Usage & Billing",
+            "pages": [
+              "api-reference/usage/get-usage"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Platform Guides",
+            "pages": [
+              "guides/tiktok/overview",
+              "guides/tiktok/track-tiktok-videos",
+              "guides/tiktok/tiktok-analytics-api",
+              "guides/tiktok/tiktok-api-alternative",
+              "guides/youtube/overview",
+              "guides/youtube/get-youtube-stats",
+              "guides/youtube/youtube-analytics-alternative",
+              "guides/instagram/overview",
+              "guides/instagram/instagram-analytics-api",
+              "guides/instagram/track-instagram-performance",
+              "guides/instagram/instagram-api-restrictions"
+            ]
+          },
         {
           "group": "Use Cases",
           "pages": [
             "guides/general/video-performance-tracking",
-            "guides/general/hourly-tracking"
+            "guides/general/hourly-tracking",
+            "guides/general/automate-analytics",
+            "guides/general/real-time-analytics"
           ]
         }
-      ]
-    },
-    {
-      "anchor": "Dashboard",
-      "icon": "gauge",
-      "url": "https://contentstats.io/dashboard"
-    },
-    {
-      "anchor": "Blog",
-      "icon": "newspaper",
-      "url": "https://contentstats.io/blog"
-    }
-  ],
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "anchor": "Dashboard",
+        "icon": "gauge",
+        "url": "https://contentstats.io/dashboard"
+      },
+      {
+        "anchor": "Blog",
+        "icon": "newspaper",
+        "url": "https://contentstats.io/blog"
+      }
+    ]
+  },
   "seo": {
     "indexHiddenPages": false
   },
