@@ -82,18 +82,7 @@
       "group": "Use Cases",
       "pages": [
         "guides/general/video-performance-tracking",
-        "guides/general/hourly-tracking",
-        "guides/general/automate-analytics",
-        "guides/general/real-time-analytics",
-        "guides/general/track-posts-automatically"
-      ]
-    },
-    {
-      "group": "Comparisons",
-      "pages": [
-        "comparisons/vs-official-apis",
-        "comparisons/vs-scraping",
-        "comparisons/affordable-api"
+        "guides/general/hourly-tracking"
       ]
     },
     {
@@ -107,7 +96,6 @@
       "group": "API Documentation",
       "pages": [
         "api-reference/introduction",
-        "api-reference/authentication",
         "api-reference/errors",
         "api-reference/rate-limits"
       ]
@@ -132,11 +120,6 @@
     "x": "https://x.com/contentstats",
     "github": "https://github.com/contentstats",
     "linkedin": "https://linkedin.com/company/contentstats"
-  },
-  "analytics": {
-    "posthog": {
-      "apiKey": "your-posthog-key"
-    }
   },
   "seo": {
     "indexHiddenPages": false
