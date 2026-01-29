@@ -1,97 +1,209 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Social Media Analytics API - Track TikTok, YouTube, Instagram & Twitter"
+seoTitle: "Social Media Analytics API | Track Video Performance Across Platforms"
+description: "Professional social media tracking API for TikTok, YouTube, Instagram, and Twitter. Get hourly snapshots, bot detection, and real-time analytics. No scraping required."
 ---
 
-## Setting up
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.png"
+  alt="ContentStats.io - Social Media Analytics API"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.png"
+  alt="ContentStats.io - Social Media Analytics API"
+/>
 
-Get your documentation site up and running in minutes.
+## Track Social Media Performance Without Scraping
+
+ContentStats.io provides a **simple REST API** to track video performance across TikTok, YouTube, Instagram, and Twitter/X. Get hourly snapshots of views, likes, comments, and engagement with built-in bot detection.
+
+<CardGroup cols={2}>
+  <Card
+    title="TikTok Analytics API"
+    icon="tiktok"
+    href="/guides/tiktok/tiktok-analytics-api"
+  >
+    Track TikTok videos with hourly snapshots and bot detection
+  </Card>
+  <Card
+    title="YouTube Analytics Alternative"
+    icon="youtube"
+    href="/guides/youtube/youtube-analytics-alternative"
+  >
+    Get YouTube video stats without official API quotas
+  </Card>
+  <Card
+    title="Instagram Analytics API"
+    icon="instagram"
+    href="/guides/instagram/instagram-analytics-api"
+  >
+    Track Instagram post performance over time
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/introduction"
+  >
+    Complete API documentation with examples
+  </Card>
+</CardGroup>
+
+## Why ContentStats.io?
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Hourly Tracking">
+    Unlike official APIs with daily limits, get **hourly snapshots** of your video performance. Perfect for tracking viral content in real-time.
+  </Accordion>
+  
+  <Accordion icon="shield-check" title="No Scraping Required">
+    We handle all the complexity of platform APIs and data collection. You get clean, structured data through a simple REST API.
+  </Accordion>
+  
+  <Accordion icon="robot" title="Built-in Bot Detection">
+    Every video comes with **AI-powered bot analysis** scoring engagement quality, comment authenticity, and timing patterns.
+  </Accordion>
+  
+  <Accordion icon="dollar-sign" title="Pay Per Snapshot">
+    Only **$0.015 per snapshot**. No subscriptions, no monthly fees. Start with $5 free credit (~333 snapshots).
+  </Accordion>
+</AccordionGroup>
+
+## Supported Platforms
+
+Track videos across all major social media platforms:
+
+| Platform | Metrics | Update Frequency | Bot Detection |
+|----------|---------|------------------|---------------|
+| **TikTok** | Views, Likes, Comments, Shares, Saves | Hourly | ✅ |
+| **YouTube** | Views, Likes, Comments | Hourly | ✅ |
+| **Instagram** | Likes, Comments, Saves | Hourly | ✅ |
+| **Twitter/X** | Views, Likes, Retweets, Replies | Hourly | ✅ |
+
+## Quick Start
+
+Get started in 3 simple steps:
+
+<Steps>
+  <Step title="Create Account">
+    [Sign up](https://contentstats.io/auth/signup) and get $5 free credit
+  </Step>
+  <Step title="Generate API Key">
+    Create an API key from your [dashboard](https://contentstats.io/dashboard/api-keys)
+  </Step>
+  <Step title="Make Your First Request">
+    ```bash
+    curl -X POST https://contentstats.io/api/v1/videos/track \
+      -H "Content-Type: application/json" \
+      -H "X-API-Key: cs_live_YOUR_KEY" \
+      -d '{
+        "video_link": "https://www.tiktok.com/@user/video/123",
+        "duration_days": 7
+      }'
+    ```
+  </Step>
+</Steps>
 
 <Card
-  title="Start here"
+  title="View Full Quickstart Guide"
   icon="rocket"
   href="/quickstart"
-  horizontal
 >
-  Follow our three step quickstart guide.
+  Learn how to authenticate and make your first API call
 </Card>
 
-## Make it yours
+## Use Cases
 
-Design a docs site that looks great and empowers your users.
+<CardGroup cols={2}>
+  <Card
+    title="Influencer Marketing"
+    icon="users"
+  >
+    Track campaign performance across all platforms in one place
+  </Card>
+  <Card
+    title="Competitive Analysis"
+    icon="chart-line"
+  >
+    Monitor competitor content and engagement patterns
+  </Card>
+  <Card
+    title="Content Research"
+    icon="magnifying-glass"
+  >
+    Analyze what content performs best in your niche
+  </Card>
+  <Card
+    title="Bot Detection"
+    icon="shield-halved"
+  >
+    Identify fake engagement and inflated metrics
+  </Card>
+</CardGroup>
 
-<Columns cols={2}>
+## What You'll Get
+
+Every tracked video includes:
+
+- **Hourly Snapshots**: Views, likes, comments, shares over time
+- **Bot Analysis**: AI-powered confidence scores for fake engagement
+- **Growth Patterns**: Velocity tracking and engagement rate analysis
+- **Historical Data**: Complete timeline from tracking start
+- **Platform Metadata**: Creator info, post date, and more
+
+## Popular Guides
+
+<CardGroup cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="How to Track TikTok Videos"
+    icon="book-open"
+    href="/guides/tiktok/track-tiktok-videos"
   >
-    Edit your docs locally and preview them in real time.
+    Step-by-step guide for TikTok video tracking
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="Get YouTube Video Stats"
+    icon="book-open"
+    href="/guides/youtube/get-youtube-stats"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Alternative to YouTube Analytics API
   </Card>
   <Card
-    title="API documentation"
+    title="Automate Social Media Analytics"
+    icon="book-open"
+    href="/guides/general/automate-analytics"
+  >
+    Build automated tracking systems
+  </Card>
+  <Card
+    title="Real-Time Analytics"
+    icon="book-open"
+    href="/guides/general/real-time-analytics"
+  >
+    Set up real-time monitoring dashboards
+  </Card>
+</CardGroup>
+
+## Ready to Start?
+
+<CardGroup cols={2}>
+  <Card
+    title="API Documentation"
     icon="terminal"
     href="/api-reference/introduction"
   >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+    Explore the complete API reference
   </Card>
   <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
+    title="View Pricing"
+    icon="credit-card"
+    href="/pricing"
   >
-    Add sample code to demonstrate how to use your product.
+    Simple pay-per-use pricing with no subscriptions
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Note>
+  **Questions?** Check our [FAQ](/faq) or [contact support](/support) for help.
+</Note>
