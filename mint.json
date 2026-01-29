@@ -2,14 +2,14 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "ContentStats.io",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/wordmark.png",
+    "dark": "/wordmark.png"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo.png",
   "colors": {
-    "primary": "#3B82F6",
-    "light": "#60A5FA",
-    "dark": "#2563EB",
+    "primary": "#6798ff",
+    "light": "#7da8ff",
+    "dark": "#5a86e0",
     "background": {
       "light": "#FFFFFF",
       "dark": "#0A0A0A"
