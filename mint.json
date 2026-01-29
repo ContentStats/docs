@@ -7,9 +7,9 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D",
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#2563EB",
     "background": {
       "light": "#FFFFFF",
       "dark": "#0A0A0A"
@@ -40,11 +40,6 @@
       "name": "Dashboard",
       "icon": "gauge",
       "url": "https://contentstats.io/dashboard"
-    },
-    {
-      "name": "Community",
-      "icon": "discord",
-      "url": "https://discord.gg/contentstats"
     },
     {
       "name": "Blog",
@@ -116,11 +111,6 @@
       ]
     }
   ],
-  "footerSocials": {
-    "x": "https://x.com/contentstats",
-    "github": "https://github.com/contentstats",
-    "linkedin": "https://linkedin.com/company/contentstats"
-  },
   "seo": {
     "indexHiddenPages": false
   },
