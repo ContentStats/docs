@@ -19,7 +19,6 @@ Track these YouTube metrics hourly:
 - **Views**: Total view count
 - **Likes**: Like count (dislikes no longer public)
 - **Comments**: Total comment count
-- **Bot Analysis**: AI-powered authenticity scoring
 
 ## Step-by-Step Guide
 
@@ -159,7 +158,6 @@ Track these YouTube metrics hourly:
       "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "platform": "youtube",
       "status": "monitoring",
-      "bot_confidence": 0.05,
       "snapshots": [
         {
           "snapshot_time": "2024-01-29T10:00:00Z",
@@ -226,26 +224,6 @@ def calculate_engagement_rate(snapshot):
 latest = video['snapshots'][-1]
 rate = calculate_engagement_rate(latest)
 print(f"Engagement rate: {rate}%")
-```
-
-### Bot Detection Score
-
-Interpret bot confidence:
-
-```javascript
-function interpretBotScore(confidence) {
-  if (confidence < 0.3) {
-    return '✅ Authentic engagement';
-  } else if (confidence < 0.5) {
-    return '⚠️ Some suspicious activity';
-  } else if (confidence < 0.7) {
-    return '🚨 Likely bot-driven';
-  } else {
-    return '❌ Definitely botted';
-  }
-}
-
-console.log('Bot analysis:', interpretBotScore(video.bot_confidence));
 ```
 
 ## Supported YouTube URL Formats
@@ -483,13 +461,6 @@ trendingUrls.forEach(url => trackVideo(url, 3));
     href="/api-reference/videos/track-video"
   >
     Complete API docs
-  </Card>
-  <Card
-    title="Bot Detection"
-    icon="shield"
-    href="/guides/general/bot-detection"
-  >
-    Understanding bot analysis
   </Card>
   <Card
     title="Automate Analytics"

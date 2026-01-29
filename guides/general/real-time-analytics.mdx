@@ -70,7 +70,6 @@ app.get('/api/dashboard', async (req, res) => {
         likes: v.latest_snapshot.likes,
         comments: v.latest_snapshot.comments,
         engagement_rate: (v.latest_snapshot.likes / v.latest_snapshot.views * 100).toFixed(2),
-        bot_score: v.bot_analysis.overall_confidence,
         updated_at: v.latest_snapshot.created_at
       })),
       summary: {
@@ -112,7 +111,6 @@ app.listen(3000, () => console.log('Dashboard API running on port 3000'));
     .video-list { background: #1a1a1a; padding: 20px; border-radius: 8px; }
     .video-item { padding: 15px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
     .metric { display: inline-block; margin-right: 20px; }
-    .bot-warning { color: #ff6b6b; }
   </style>
 </head>
 <body>
@@ -157,7 +155,6 @@ app.listen(3000, () => console.log('Dashboard API running on port 3000'));
           <div class="video-item">
             <div>
               <strong>${v.platform.toUpperCase()}</strong>
-              ${v.bot_score < 70 ? '<span class="bot-warning">⚠️ Bot Activity</span>' : ''}
             </div>
             <div>
               <span class="metric">👁️ ${v.views.toLocaleString()}</span>
@@ -290,13 +287,11 @@ Display these critical metrics on your dashboard:
 - Total tracked videos
 - Combined views across all platforms
 - Average engagement rate
-- Bot detection alerts
 
 **Per-Video Metrics:**
 - Views, Likes, Comments, Shares
 - Engagement rate (likes/views)
 - Growth rate (last hour vs previous hour)
-- Bot confidence score
 - Platform-specific metrics
 
 **Trend Analysis:**
@@ -332,9 +327,6 @@ function calculateMetrics(video) {
 
     // Velocity (views per hour)
     velocity: calculateVelocity(snapshots),
-
-    // Bot analysis
-    bot_risk: video.bot_analysis.overall_confidence < 70 ? 'high' : 'low',
 
     // Viral score (custom algorithm)
     viral_score: calculateViralScore(snapshots)
@@ -416,7 +408,7 @@ const platformChart = new Chart(platformCtx, {
 
   <Accordion icon="bell" title="Real-Time Alerts">
     - Browser notifications for viral content
-    - Email alerts for bot detection
+    - Email alerts for important events
     - Slack integration for team updates
     - Custom webhook triggers
   </Accordion>

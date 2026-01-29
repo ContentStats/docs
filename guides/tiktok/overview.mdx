@@ -1,12 +1,12 @@
 ---
 title: "TikTok Analytics API - Complete Guide"
 seoTitle: "TikTok Analytics API | Track TikTok Videos Programmatically"
-description: "Complete guide to tracking TikTok videos with our API. Get hourly snapshots, bot detection, and real-time analytics without official API approval."
+description: "Complete guide to tracking TikTok videos with our API. Get hourly snapshots and real-time analytics without official API approval."
 ---
 
 ## TikTok Video Tracking Made Simple
 
-Track TikTok video performance programmatically without dealing with TikTok's official API restrictions. Get hourly snapshots, engagement metrics, and AI-powered bot detection through a simple REST API.
+Track TikTok video performance programmatically without dealing with TikTok's official API restrictions. Get hourly snapshots and engagement metrics through a simple REST API.
 
 <CardGroup cols={2}>
   <Card
@@ -50,13 +50,6 @@ Track TikTok video performance programmatically without dealing with TikTok's of
     - ✅ Historical timeline data
   </Tab>
   
-  <Tab title="Bot Detection">
-    Unique to ContentStats.io:
-    - ✅ AI-powered bot analysis
-    - ✅ Engagement quality scoring
-    - ✅ Comment authenticity checks
-    - ✅ Timing pattern detection
-  </Tab>
 </Tabs>
 
 ## TikTok Metrics Available
@@ -70,8 +63,6 @@ We track all public TikTok metrics:
 | **Comments** | Comment count | Hourly |
 | **Shares** | Share count | Hourly |
 | **Saves** | Bookmark/save count | Hourly |
-
-Plus **bot analysis scores** for each metric.
 
 ## Quick Start
 
@@ -93,7 +84,7 @@ Plus **bot analysis scores** for each metric.
   </Step>
   
   <Step title="Get Snapshots">
-    Receive hourly snapshots with full engagement data and bot analysis
+    Receive hourly snapshots with full engagement data
   </Step>
 </Steps>
 
@@ -123,9 +114,6 @@ https://www.tiktok.com/t/abc123/
   <Card title="Trend Research" icon="arrow-trend-up">
     Identify what content goes viral in your niche
   </Card>
-  <Card title="Bot Detection" icon="shield-check">
-    Verify engagement authenticity before partnerships
-  </Card>
 </CardGroup>
 
 ## Example Response
@@ -136,7 +124,6 @@ https://www.tiktok.com/t/abc123/
   "video_link": "https://www.tiktok.com/@user/video/1234567890",
   "platform": "tiktok",
   "status": "monitoring",
-  "bot_confidence": 0.18,
   "snapshots": [
     {
       "snapshot_time": "2024-01-29T10:00:00.000Z",
@@ -154,63 +141,9 @@ https://www.tiktok.com/t/abc123/
       "shares": "12300",
       "saves": "8700"
     }
-  ],
-  "bot_analysis": {
-    "overall_confidence": 0.18,
-    "engagement_velocity_score": 0.12,
-    "comment_quality_score": 0.21,
-    "timing_pattern_score": 0.15,
-    "ratio_analysis_score": 0.19
-  }
+  ]
 }
 ```
-
-## Bot Detection Explained
-
-Our AI analyzes multiple signals to detect fake engagement:
-
-<AccordionGroup>
-  <Accordion title="Engagement Velocity Score">
-    Analyzes the **speed** of likes, comments, and shares. Bot-driven content often shows:
-    - Sudden spikes in engagement
-    - Unnatural growth patterns
-    - Suspicious velocity changes
-    
-    **Lower score = more authentic**
-  </Accordion>
-  
-  <Accordion title="Comment Quality Score">
-    Evaluates **comment authenticity**:
-    - Generic/spammy comments
-    - Repetitive patterns
-    - Bot-like language
-    - Profile quality of commenters
-    
-    **Lower score = higher quality comments**
-  </Accordion>
-  
-  <Accordion title="Timing Pattern Score">
-    Detects **suspicious timing**:
-    - Engagement clusters (too many at once)
-    - 24/7 engagement (no organic dips)
-    - Round-number milestones
-    
-    **Lower score = more organic timing**
-  </Accordion>
-  
-  <Accordion title="Ratio Analysis Score">
-    Compares engagement **ratios**:
-    - Views to likes ratio
-    - Likes to comments ratio
-    - Shares to views ratio
-    
-    **Unusual ratios indicate bot activity**
-  </Accordion>
-</AccordionGroup>
-
-<Note>
-  **Overall bot confidence** ranges from 0.0 (authentic) to 1.0 (likely botted). Scores above 0.7 indicate high bot probability.
-</Note>
 
 ## Pricing for TikTok Tracking
 
@@ -234,10 +167,6 @@ Example for 7 days:
   
   <Accordion title="Do I need TikTok API approval?">
     No! We handle all platform interactions. You just need a ContentStats.io API key.
-  </Accordion>
-  
-  <Accordion title="How accurate is the bot detection?">
-    Our AI model is trained on millions of TikTok videos with 87% accuracy in detecting bot-driven engagement.
   </Accordion>
   
   <Accordion title="Can I track TikTok Live videos?">

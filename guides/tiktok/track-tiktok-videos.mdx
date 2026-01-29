@@ -1,12 +1,12 @@
 ---
 title: "How to Track TikTok Videos"
 seoTitle: "How to Track TikTok Videos with API | Step-by-Step Guide 2026"
-description: "Learn how to track TikTok video performance with our API. Get hourly snapshots of views, likes, comments, shares, and bot detection. No TikTok API approval needed."
+description: "Learn how to track TikTok video performance with our API. Get hourly snapshots of views, likes, comments, and shares. No TikTok API approval needed."
 ---
 
 ## Track TikTok Videos Programmatically
 
-This guide shows you how to track TikTok video performance using the ContentStats.io API. Get hourly snapshots of views, likes, comments, shares, and saves with built-in bot detection.
+This guide shows you how to track TikTok video performance using the ContentStats.io API. Get hourly snapshots of views, likes, comments, shares, and saves.
 
 <Note>
   **No TikTok API approval required.** Start tracking in minutes with just an API key.
@@ -145,7 +145,7 @@ Send a POST request to `/api/v1/videos/track`:
   Save the `id` field — you'll need it to retrieve snapshots later.
 </Info>
 
-## Step 3: Get Snapshots and Bot Analysis
+## Step 3: Get Snapshots
 
 After the first hour, retrieve snapshot data:
 
@@ -167,7 +167,6 @@ After the first hour, retrieve snapshot data:
 
   const video = await response.json();
   console.log('Total snapshots:', video.snapshots.length);
-  console.log('Bot confidence:', video.bot_confidence);
   ```
 
   ```python Python
@@ -178,7 +177,6 @@ After the first hour, retrieve snapshot data:
 
   video = response.json()
   print(f"Total snapshots: {len(video['snapshots'])}")
-  print(f"Bot confidence: {video['bot_confidence']}")
   ```
 </CodeGroup>
 
@@ -190,7 +188,6 @@ After the first hour, retrieve snapshot data:
   "video_link": "https://www.tiktok.com/@charlidamelio/video/7234567890",
   "platform": "tiktok",
   "status": "monitoring",
-  "bot_confidence": 0.15,
   "snapshots": [
     {
       "id": "snap_001",
@@ -210,36 +207,9 @@ After the first hour, retrieve snapshot data:
       "shares": "12800",
       "saves": "9100"
     }
-  ],
-  "bot_analysis": {
-    "overall_confidence": 0.15,
-    "engagement_velocity_score": 0.12,
-    "comment_quality_score": 0.18,
-    "timing_pattern_score": 0.14,
-    "ratio_analysis_score": 0.16,
-    "channel_context_score": 0.11
-  }
+  ]
 }
 ```
-
-## Understanding Bot Analysis
-
-Each video gets AI-powered bot detection:
-
-| Score | Meaning | Action |
-|-------|---------|--------|
-| **0.0 - 0.3** | Authentic | ✅ Engagement looks real |
-| **0.3 - 0.5** | Suspicious | ⚠️ Some red flags detected |
-| **0.5 - 0.7** | Likely Botted | 🚨 High probability of fake engagement |
-| **0.7 - 1.0** | Definitely Botted | ❌ Clear bot activity |
-
-<Accordion title="What each score measures">
-  - **Engagement Velocity**: Speed of likes/comments (sudden spikes = bots)
-  - **Comment Quality**: Generic/spammy comments indicate bots
-  - **Timing Patterns**: 24/7 engagement without dips = suspicious
-  - **Ratio Analysis**: Unusual views:likes:comments ratios
-  - **Channel Context**: Account age, follower count, history
-</Accordion>
 
 ## Step 4: List All Tracked TikTok Videos
 
@@ -331,7 +301,6 @@ console.log(`Started tracking ${results.length} videos`);
 Get notified when:
 - First snapshot is collected
 - Tracking completes
-- Bot score changes significantly
 - Video gets deleted
 
 ## Troubleshooting
@@ -416,13 +385,6 @@ Get notified when:
     href="/guides/tiktok/tiktok-analytics-developers"
   >
     Advanced integration examples
-  </Card>
-  <Card
-    title="Bot Detection Guide"
-    icon="shield"
-    href="/guides/general/bot-detection"
-  >
-    Deep dive into bot analysis
   </Card>
   <Card
     title="API Reference"

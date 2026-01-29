@@ -1,7 +1,7 @@
 ---
 title: "TikTok Analytics API for Developers"
 seoTitle: "TikTok Analytics API | Developer Guide & Code Examples 2026"
-description: "Complete TikTok analytics API for developers. Track views, likes, comments, shares programmatically. No approval needed. Get hourly snapshots with bot detection."
+description: "Complete TikTok analytics API for developers. Track views, likes, comments, shares programmatically. No approval needed. Get hourly snapshots."
 ---
 
 ## TikTok Analytics API Overview
@@ -31,7 +31,6 @@ Build TikTok analytics into your app with our developer-friendly API. Track any 
     - ✅ Instant access
     - ✅ Track ANY public video
     - ✅ Hourly updates
-    - ✅ Built-in bot detection
     - ✅ RESTful design
   </Tab>
 </Tabs>
@@ -167,7 +166,7 @@ Start tracking a TikTok video.
 GET /api/v1/videos/{id}
 ```
 
-Retrieve snapshots and bot analysis.
+Retrieve snapshots.
 
 **Response:**
 ```json
@@ -182,12 +181,7 @@ Retrieve snapshots and bot analysis.
       "shares": "12500",
       "saves": "8900"
     }
-  ],
-  "bot_analysis": {
-    "overall_confidence": 0.18,
-    "engagement_velocity_score": 0.15,
-    "comment_quality_score": 0.21
-  }
+  ]
 }
 ```
 
@@ -353,29 +347,6 @@ interface Snapshot {
 }
 ```
 
-### Bot Analysis Object
-
-```typescript
-interface BotAnalysis {
-  overall_confidence: number; // 0.0 - 1.0
-  engagement_velocity_score: number;
-  comment_quality_score: number;
-  timing_pattern_score: number;
-  ratio_analysis_score: number;
-  channel_context_score: number;
-  patterns: object | null;
-  flags: BotFlag[];
-}
-
-interface BotFlag {
-  type: string;
-  severity: 'low' | 'medium' | 'high';
-  description: string;
-  evidence: object;
-  detected_at: string;
-}
-```
-
 ## Rate Limiting
 
 | Plan | Rate Limit | Concurrent Videos |
@@ -434,7 +405,7 @@ Subscribe to events:
 
 ```json
 {
-  "events": ["snapshot.created", "tracking.completed", "bot.detected"],
+  "events": ["snapshot.created", "tracking.completed"],
   "url": "https://your-app.com/webhooks/contentstats",
   "secret": "whsec_your_secret"
 }

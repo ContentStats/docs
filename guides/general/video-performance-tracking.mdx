@@ -1,7 +1,7 @@
 ---
 title: "Video Performance Tracking"
 seoTitle: "Video Performance Tracking API | Track Social Media Videos"
-description: "Complete guide to video performance tracking across TikTok, YouTube, Instagram, and Twitter. Get hourly metrics, bot detection, and growth analytics."
+description: "Complete guide to video performance tracking across TikTok, YouTube, Instagram, and Twitter. Get hourly metrics and growth analytics."
 ---
 
 ## Track Video Performance Across All Platforms
@@ -19,9 +19,6 @@ Monitor video performance across TikTok, YouTube, Instagram, and Twitter with au
   </Card>
   <Card title="ROI Measurement" icon="dollar-sign">
     Track campaign performance and calculate accurate ROI
-  </Card>
-  <Card title="Detect Fraud" icon="shield-check">
-    Identify fake engagement with AI-powered bot detection
   </Card>
 </CardGroup>
 
@@ -47,7 +44,6 @@ Monitor video performance across TikTok, YouTube, Instagram, and Twitter with au
     We collect hourly snapshots automatically:
     - Views, likes, comments
     - Platform-specific metrics (shares, saves)
-    - Bot detection scores
     - Growth patterns
   </Step>
   
@@ -55,7 +51,6 @@ Monitor video performance across TikTok, YouTube, Instagram, and Twitter with au
     Access data via API or dashboard:
     - Growth charts
     - Engagement rates
-    - Bot analysis
     - Viral moment detection
   </Step>
 </Steps>
@@ -70,8 +65,7 @@ const tiktokMetrics = {
   likes: "Hearts/likes count",
   comments: "Comment count",
   shares: "Share count",
-  saves: "Bookmark/save count",
-  botScore: "Fake engagement confidence (0-1)"
+  saves: "Bookmark/save count"
 };
 ```
 
@@ -87,8 +81,7 @@ const tiktokMetrics = {
 const youtubeMetrics = {
   views: "Total view count",
   likes: "Like count",
-  comments: "Comment count",
-  botScore: "Bot activity detection"
+  comments: "Comment count"
 };
 ```
 
@@ -104,8 +97,7 @@ const youtubeMetrics = {
 const instagramMetrics = {
   likes: "Like count",
   comments: "Comment count",
-  saves: "Save/bookmark count",
-  botScore: "Engagement authenticity"
+  saves: "Save/bookmark count"
 };
 ```
 
@@ -122,8 +114,7 @@ const twitterMetrics = {
   views: "Impression count",
   likes: "Like count",
   retweets: "Retweet count",
-  replies: "Reply count",
-  botScore: "Bot farm detection"
+  replies: "Reply count"
 };
 ```
 
@@ -171,11 +162,6 @@ const growth = {
 };
 
 console.log(`Growth after ${growth.hours} hours:`,growth);
-
-// 5. Check bot activity
-if (performance.bot_confidence > 0.5) {
-  console.warn('⚠️ High bot activity detected:', performance.bot_confidence);
-}
 ```
 
 ## Common Use Cases
@@ -325,7 +311,7 @@ function analyzeGrowthRate(snapshots) {
 ### Engagement Quality Score
 
 ```javascript
-function calculateEngagementQuality(snapshot, botConfidence) {
+function calculateEngagementQuality(snapshot) {
   const views = parseInt(snapshot.views);
   const likes = parseInt(snapshot.likes);
   const comments = parseInt(snapshot.comments);
@@ -333,13 +319,9 @@ function calculateEngagementQuality(snapshot, botConfidence) {
   // Calculate engagement rate
   const engagementRate = ((likes + comments) / views) * 100;
   
-  // Adjust for bot activity
-  const authenticEngagement = engagementRate * (1 - botConfidence);
-  
   return {
-    rawEngagementRate: engagementRate.toFixed(2) + '%',
-    authenticEngagementRate: authenticEngagement.toFixed(2) + '%',
-    botPenalty: (botConfidence * 100).toFixed(1) + '%'
+    engagementRate: engagementRate.toFixed(2) + '%',
+    totalEngagement: likes + comments
   };
 }
 ```
@@ -352,7 +334,6 @@ function calculateEngagementQuality(snapshot, botConfidence) {
     - **Awareness**: Focus on views and reach
     - **Engagement**: Track likes, comments, shares
     - **Conversions**: Monitor click-through and saves
-    - **Authenticity**: Check bot scores
   </Accordion>
   
   <Accordion icon="clock" title="Choose Right Duration">
@@ -369,17 +350,15 @@ function calculateEngagementQuality(snapshot, botConfidence) {
     ```javascript
     const benchmark = {
       avgViews24h: 50000,
-      avgEngagementRate: 3.5,
-      acceptableBotScore: 0.3
+      avgEngagementRate: 3.5
     };
     
-    function compareTooBenchmark(video, benchmark) {
+    function compareToBenchmark(video, benchmark) {
       const latest = video.snapshots[video.snapshots.length - 1];
       const views24h = calculateViews24h(video.snapshots);
       
       return {
-        viewsVsBenchmark: (views24h / benchmark.avgViews24h * 100).toFixed(0) + '%',
-        botScore: video.bot_confidence < benchmark.acceptableBotScore ? '✅' : '⚠️'
+        viewsVsBenchmark: (views24h / benchmark.avgViews24h * 100).toFixed(0) + '%'
       };
     }
     ```

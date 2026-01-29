@@ -155,22 +155,6 @@ if ($data['success']) {
     ```
   </Accordion>
   
-  <Accordion icon="robot" title="High Bot Activity Detected">
-    Video shows clear bot activity:
-    
-    ```javascript
-    async function stopIfBotDetected(videoId, threshold = 0.7) {
-      const video = await getVideo(videoId);
-      
-      if (video.bot_confidence > threshold) {
-        await stopVideo(videoId);
-        console.log('Stopped: High bot confidence', video.bot_confidence);
-        return { botted: true, score: video.bot_confidence };
-      }
-    }
-    ```
-  </Accordion>
-  
   <Accordion icon="trash" title="Video Deleted">
     Platform removed the video:
     
@@ -258,11 +242,11 @@ async function batchStopVideos(videoIds) {
   return results;
 }
 
-// Stop all completed or high-bot videos
+// Stop videos with low remaining time
 const videos = await listVideos();
 const toStop = videos.videos
   .filter(v => v.status === 'monitoring')
-  .filter(v => v.bot_confidence > 0.7 || v.days_remaining < 0.5)
+  .filter(v => v.days_remaining < 0.5)
   .map(v => v.id);
 
 await batchStopVideos(toStop);
@@ -282,7 +266,6 @@ const stoppedVideo = await getVideo('cm5abc123def');
 
 console.log('Status:', stoppedVideo.status); // "completed"
 console.log('Snapshots:', stoppedVideo.snapshots.length); // All preserved
-console.log('Bot analysis:', stoppedVideo.bot_analysis); // Still available
 ```
 
 ## Error Responses
@@ -378,7 +361,7 @@ const newJob = await trackVideo({
       return result;
     }
     
-    await stopWithReason('cm5abc123', 'High bot activity detected');
+    await stopWithReason('cm5abc123', 'Low engagement detected');
     ```
   </Accordion>
   

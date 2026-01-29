@@ -66,48 +66,7 @@ Track these Instagram metrics hourly:
 - **Comments**: Number of comments
 - **Saves**: Bookmark/save count
 
-## Bot Detection
-
-Each post includes AI-powered bot analysis:
-
-```json
-{
-  "bot_analysis": {
-    "overall_confidence": 0.22,
-    "engagement_velocity_score": 0.18,
-    "comment_quality_score": 0.25,
-    "timing_pattern_score": 0.21
-  }
-}
-```
-
-| Score | Meaning |
-|-------|---------|
-| 0.0 - 0.3 | ✅ Authentic |
-| 0.3 - 0.5 | ⚠️ Suspicious |
-| 0.5 - 0.7 | 🚨 Likely botted |
-| 0.7 - 1.0 | ❌ Definitely botted |
-
 ## Use Cases
-
-### Influencer Vetting
-
-```javascript
-async function vetInfluencer(postUrl) {
-  const data = await trackPost(postUrl, 3);
-  
-  // Wait for data collection
-  await sleep(3 * 24 * 60 * 60 * 1000);
-  
-  const post = await getPost(data.id);
-  
-  if (post.bot_confidence > 0.5) {
-    return { approved: false, reason: 'High bot activity' };
-  }
-  
-  return { approved: true };
-}
-```
 
 ### Campaign Monitoring
 

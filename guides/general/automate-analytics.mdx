@@ -132,7 +132,7 @@ Use Webhooks to connect ContentStats.io with 5,000+ apps:
 3. Create workflows (Zaps):
    - Video goes viral → Send Slack notification
    - New high-performing video → Add to spreadsheet
-   - Bot detected → Send email alert
+   - Tracking completed → Send email notification
 
 ### Make (Integromat)
 
@@ -144,9 +144,7 @@ Build complex automation scenarios:
 2. HTTP Request: Get all tracked videos
 3. Filter: Videos with >100k views
 4. Iterator: Loop through filtered videos
-5. HTTP Request: Get bot analysis for each
-6. Filter: Bot confidence score < 70%
-7. Action: Send notification to Slack
+5. Action: Send notification to Slack
 ```
 
 ### Custom Scripts (Cron Jobs)
@@ -178,7 +176,6 @@ graph LR
     D --> E[Analytics Dashboard]
     C --> F{Check Thresholds}
     F -->|Viral| G[Send Alert]
-    F -->|Bot Detected| H[Flag for Review]
 ```
 
 ### Example: ETL Pipeline
@@ -212,7 +209,6 @@ class ContentStatsETL:
                 'views': snapshot['views'],
                 'likes': snapshot['likes'],
                 'engagement_rate': snapshot['likes'] / snapshot['views'] * 100,
-                'bot_score': video['bot_analysis']['overall_confidence'],
                 'timestamp': snapshot['created_at']
             })
         return transformed
@@ -223,13 +219,12 @@ class ContentStatsETL:
         for row in data:
             cursor.execute("""
                 INSERT INTO video_analytics 
-                (video_id, platform, views, likes, engagement_rate, bot_score, timestamp)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                (video_id, platform, views, likes, engagement_rate, timestamp)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 ON CONFLICT (video_id, timestamp) DO UPDATE SET
                 views = EXCLUDED.views,
                 likes = EXCLUDED.likes,
-                engagement_rate = EXCLUDED.engagement_rate,
-                bot_score = EXCLUDED.bot_score
+                engagement_rate = EXCLUDED.engagement_rate
             """, tuple(row.values()))
         self.db.commit()
     
@@ -310,11 +305,6 @@ class SocialMediaAutomation {
       // Check for viral growth
       if (this.isGoingViral(video)) {
         await this.sendAlert('viral', video);
-      }
-      
-      // Check for bot activity
-      if (video.bot_analysis.overall_confidence < 70) {
-        await this.sendAlert('bot_detected', video);
       }
     }
   }

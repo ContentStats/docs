@@ -114,12 +114,12 @@ Common status codes:
 
 ## Supported Platforms
 
-| Platform | Metrics | Bot Detection |
-|----------|---------|---------------|
-| **TikTok** | Views, Likes, Comments, Shares, Saves | ✅ |
-| **YouTube** | Views, Likes, Comments | ✅ |
-| **Instagram** | Likes, Comments, Saves | ✅ |
-| **Twitter/X** | Views, Likes, Retweets, Replies | ✅ |
+| Platform | Metrics |
+|----------|---------|
+| **TikTok** | Views, Likes, Comments, Shares, Saves |
+| **YouTube** | Views, Likes, Comments |
+| **Instagram** | Likes, Comments, Saves |
+| **Twitter/X** | Views, Likes, Retweets, Replies |
 
 ## Data Types
 
@@ -132,7 +132,6 @@ Common status codes:
   video_link: string;
   platform: 'tiktok' | 'youtube' | 'instagram' | 'twitter';
   status: 'monitoring' | 'completed' | 'paused' | 'error' | 'cancelled';
-  bot_confidence: number; // 0.0 - 1.0
   monitoring_started: string; // ISO 8601
   monitoring_duration_days: number;
   days_remaining: number;
@@ -158,21 +157,6 @@ Common status codes:
 }
 ```
 
-### Bot Analysis Object
-
-```typescript
-{
-  overall_confidence: number; // 0.0 - 1.0
-  engagement_velocity_score: number;
-  comment_quality_score: number;
-  timing_pattern_score: number;
-  ratio_analysis_score: number;
-  channel_context_score: number;
-  patterns: object;
-  flags: BotFlag[];
-}
-```
-
 ## Pagination
 
 List endpoints support pagination:
@@ -192,7 +176,6 @@ Query parameters:
 Subscribe to events:
 - `snapshot.created`
 - `tracking.completed`
-- `bot.detected`
 - `balance.low`
 
 ## Best Practices

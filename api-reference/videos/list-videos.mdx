@@ -70,10 +70,6 @@ Retrieve all videos you're tracking, with optional filters for platform and stat
       Current status
     </ResponseField>
     
-    <ResponseField name="bot_confidence" type="number">
-      Bot detection score (0.0 - 1.0)
-    </ResponseField>
-    
     <ResponseField name="monitoring_started" type="string">
       ISO 8601 timestamp
     </ResponseField>
@@ -88,10 +84,6 @@ Retrieve all videos you're tracking, with optional filters for platform and stat
     
     <ResponseField name="current_metadata" type="object">
       Latest video metadata
-    </ResponseField>
-    
-    <ResponseField name="bot_analysis" type="object">
-      Bot detection analysis
     </ResponseField>
     
     <ResponseField name="created_at" type="string">
@@ -144,7 +136,7 @@ data.videos.forEach(video => {
 import requests
 import os
 
-# Get all videos with high bot scores
+# Get all videos
 response = requests.get(
     'https://contentstats.io/api/v1/videos',
     headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
@@ -152,13 +144,13 @@ response = requests.get(
 
 data = response.json()
 
-# Filter by bot confidence
-suspicious = [
+# Filter by status
+active = [
     v for v in data['videos']
-    if v['bot_confidence'] > 0.5
+    if v['status'] == 'monitoring'
 ]
 
-print(f"Found {len(suspicious)} videos with high bot activity")
+print(f"Found {len(active)} active videos")
 ```
 
 ```php PHP
@@ -192,19 +184,12 @@ echo "Total YouTube videos: " . $data['total'];
       "video_link": "https://www.tiktok.com/@user/video/123",
       "platform": "tiktok",
       "status": "monitoring",
-      "bot_confidence": 0.18,
       "monitoring_started": "2024-01-29T10:00:00.000Z",
       "monitoring_duration_days": 7,
       "days_remaining": 5.5,
       "current_metadata": {
         "title": "Viral Dance Challenge",
         "creator": "@user"
-      },
-      "bot_analysis": {
-        "overall_confidence": 0.18,
-        "engagement_velocity_score": 0.15,
-        "comment_quality_score": 0.21,
-        "timing_pattern_score": 0.16
       },
       "created_at": "2024-01-29T10:00:00.000Z"
     },
@@ -214,17 +199,11 @@ echo "Total YouTube videos: " . $data['total'];
       "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "platform": "youtube",
       "status": "completed",
-      "bot_confidence": 0.05,
       "monitoring_started": "2024-01-22T10:00:00.000Z",
       "monitoring_duration_days": 7,
       "days_remaining": 0,
       "current_metadata": {
         "title": "Never Gonna Give You Up"
-      },
-      "bot_analysis": {
-        "overall_confidence": 0.05,
-        "engagement_velocity_score": 0.03,
-        "comment_quality_score": 0.07
       },
       "created_at": "2024-01-22T10:00:00.000Z"
     }
@@ -251,32 +230,9 @@ async function getActiveVideos() {
     id: v.id,
     platform: v.platform,
     url: v.video_link,
-    daysLeft: v.days_remaining,
-    botScore: v.bot_confidence
+    daysLeft: v.days_remaining
   }));
 }
-```
-
-### Find Videos by Bot Score
-
-```python
-def get_suspicious_videos(min_confidence=0.5):
-    response = requests.get(
-        'https://contentstats.io/api/v1/videos',
-        headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
-    )
-    
-    data = response.json()
-    
-    return [
-        v for v in data['videos']
-        if v['bot_confidence'] >= min_confidence
-    ]
-
-# Get videos likely using bots
-suspicious = get_suspicious_videos(0.5)
-for video in suspicious:
-    print(f"{video['video_link']}: {video['bot_confidence']:.2f}")
 ```
 
 ### Platform-Specific Analytics
@@ -293,7 +249,6 @@ async function getPlatformStats(platform) {
   const stats = {
     total: data.total,
     active: data.videos.filter(v => v.status === 'monitoring').length,
-    avgBotScore: data.videos.reduce((sum, v) => sum + v.bot_confidence, 0) / data.total,
     totalDaysTracking: data.videos.reduce((sum, v) => sum + v.monitoring_duration_days, 0)
   };
   

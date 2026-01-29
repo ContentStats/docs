@@ -76,7 +76,6 @@ Instagram's official API (Graph API) has significant restrictions that make it d
 | **Rate Limit** | 200/hour | 60-300/min |
 | **OAuth Setup** | ✅ Required | ❌ Simple API key |
 | **Hourly Tracking** | ❌ Manual | ✅ Automatic |
-| **Bot Detection** | ❌ No | ✅ Built-in |
 
 ## Why These Restrictions Exist
 
@@ -103,7 +102,6 @@ We provide Instagram analytics without requiring:
 - ✅ Simple API key authentication
 - ✅ Instant access
 - ✅ Hourly automated tracking
-- ✅ Built-in bot detection
 
 ## Use Cases Blocked by Restrictions
 
@@ -137,9 +135,8 @@ async function vetInfluencer(instagramUrl) {
   const post = await getPost(data.id);
   
   return {
-    bot_score: post.bot_confidence,
     engagement_rate: calculateEngagement(post),
-    authentic: post.bot_confidence < 0.3
+    views: post.views
   };
 }
 ```
@@ -185,7 +182,6 @@ trendingHashtags.forEach(async (tag) => {
 - ✅ **Automated**: Hourly snapshots
 - ✅ **Affordable**: $0.015/snapshot
 - ✅ **No Restrictions**: Track any public post
-- ✅ **Bot Detection**: Included
 - ✅ **API Access**: Full programmatic access
 
 ## Getting Started

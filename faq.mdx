@@ -1,14 +1,14 @@
 ---
 title: "Frequently Asked Questions"
 seoTitle: "FAQ | ContentStats.io Social Media Analytics API"
-description: "Common questions about ContentStats.io. Learn about pricing, supported platforms, bot detection, API usage, and more."
+description: "Common questions about ContentStats.io. Learn about pricing, supported platforms, API usage, and more."
 ---
 
 ## General Questions
 
 <AccordionGroup>
   <Accordion title="What is ContentStats.io?">
-    ContentStats.io is a social media analytics API that tracks video performance across TikTok, YouTube, Instagram, and Twitter. We provide hourly snapshots, bot detection, and historical data through a simple REST API.
+    ContentStats.io is a social media analytics API that tracks video performance across TikTok, YouTube, Instagram, and Twitter. We provide hourly snapshots and historical data through a simple REST API.
     
     Unlike official platform APIs, we don't require approval, business accounts, or complex OAuth flows.
   </Accordion>
@@ -24,7 +24,6 @@ description: "Common questions about ContentStats.io. Learn about pricing, suppo
     - ✅ Instant access with API key
     - ✅ Track ANY public video
     - ✅ No quotas or approval process
-    - ✅ Built-in bot detection
     - ✅ Hourly automated tracking
   </Accordion>
   
@@ -44,8 +43,6 @@ description: "Common questions about ContentStats.io. Learn about pricing, suppo
     - **YouTube**: Views, likes, comments
     - **Instagram**: Likes, comments, saves
     - **Twitter/X**: Views, likes, retweets, replies
-    
-    All platforms include AI-powered bot detection.
   </Accordion>
 </AccordionGroup>
 
@@ -156,56 +153,7 @@ description: "Common questions about ContentStats.io. Learn about pricing, suppo
     **Coming soon!** Webhook support is in development. You'll be able to subscribe to:
     - `snapshot.created` - New snapshot collected
     - `tracking.completed` - Tracking finished
-    - `bot.detected` - High bot score detected
     - `balance.low` - Balance below threshold
-  </Accordion>
-</AccordionGroup>
-
-## Bot Detection
-
-<AccordionGroup>
-  <Accordion title="How does bot detection work?">
-    Our AI analyzes multiple signals to detect fake engagement:
-    
-    1. **Engagement Velocity**: Unusual spike patterns
-    2. **Comment Quality**: Generic/spammy comments
-    3. **Timing Patterns**: 24/7 engagement without dips
-    4. **Ratio Analysis**: Suspicious metrics ratios
-    5. **Channel Context**: Account age and history
-    
-    **Bot confidence score:**
-    - 0.0 - 0.3 = Authentic
-    - 0.3 - 0.5 = Suspicious
-    - 0.5 - 0.7 = Likely botted
-    - 0.7 - 1.0 = Definitely botted
-  </Accordion>
-  
-  <Accordion title="How accurate is bot detection?">
-    Our AI model achieves **87% accuracy** in detecting bot-driven engagement, trained on millions of videos across all platforms.
-    
-    We continuously improve the model with new patterns and user feedback.
-  </Accordion>
-  
-  <Accordion title="Can I see why engagement was flagged?">
-    Yes! Each video includes detailed `bot_analysis` with:
-    - Individual score for each detection method
-    - Specific patterns identified
-    - Flags with severity levels (low/medium/high)
-    - Evidence supporting the detection
-    
-    Example:
-    ```json
-    {
-      "flags": [
-        {
-          "type": "engagement_spike",
-          "severity": "high",
-          "description": "Unusual like velocity detected",
-          "evidence": { "spike_at": "2024-01-29T15:00:00Z" }
-        }
-      ]
-    }
-    ```
   </Accordion>
 </AccordionGroup>
 
@@ -264,11 +212,8 @@ description: "Common questions about ContentStats.io. Learn about pricing, suppo
   <Accordion title="Can I verify influencer engagement?">
     **Yes!** Perfect for influencer vetting:
     - Track their recent posts for 3-7 days
-    - Check bot confidence scores
     - Analyze engagement patterns
-    - Verify authentic vs. fake engagement
-    
-    Our bot detection helps avoid partnerships with fake influencers.
+    - Verify authentic engagement growth
   </Accordion>
   
   <Accordion title="Can I track trending videos?">
@@ -283,7 +228,6 @@ description: "Common questions about ContentStats.io. Learn about pricing, suppo
     **Absolutely!** Track your own videos to:
     - Monitor performance in real-time
     - Get hourly growth data
-    - Detect bot activity on your content
     - Build historical performance database
     
     Much more powerful than native platform analytics.

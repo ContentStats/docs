@@ -119,7 +119,7 @@ This guide will help you make your first API request and start tracking social m
   </Step>
 
   <Step title="Check Video Status">
-    Use the video `id` to get snapshots and bot analysis:
+    Use the video `id` to get snapshots:
 
     <CodeGroup>
       ```bash cURL
@@ -159,7 +159,6 @@ This guide will help you make your first API request and start tracking social m
         "video_link": "https://www.tiktok.com/@user/video/123",
         "platform": "tiktok",
         "status": "monitoring",
-        "bot_confidence": 0.23,
         "snapshots": [
           {
             "snapshot_time": "2024-01-29T10:00:00.000Z",
@@ -175,13 +174,7 @@ This guide will help you make your first API request and start tracking social m
             "comments": "380",
             "shares": "920"
           }
-        ],
-        "bot_analysis": {
-          "overall_confidence": 0.23,
-          "engagement_velocity_score": 0.15,
-          "comment_quality_score": 0.28,
-          "timing_pattern_score": 0.19
-        }
+        ]
       }
       ```
     </Accordion>
@@ -193,9 +186,8 @@ This guide will help you make your first API request and start tracking social m
 Once tracking starts:
 
 1. **Hourly Snapshots**: We collect metrics every hour for the duration you specified
-2. **Bot Analysis**: AI analyzes engagement patterns for authenticity
-3. **Automatic Billing**: Each snapshot costs $0.015, deducted from your balance
-4. **Email Updates**: Get notified when tracking completes or if your balance is low
+2. **Automatic Billing**: Each snapshot costs $0.015, deducted from your balance
+3. **Email Updates**: Get notified when tracking completes or if your balance is low
 
 ## Supported Video Links
 

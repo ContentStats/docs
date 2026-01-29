@@ -51,7 +51,6 @@ We built ContentStats.io to solve these exact problems.
 | **Track Any Video** | ❌ Only yours | ✅ Any public video |
 | **Authentication** | OAuth 2.0 | ✅ Simple API key |
 | **Hourly Updates** | ❌ Limited | ✅ Yes |
-| **Bot Detection** | ❌ No | ✅ Built-in AI |
 | **Historical Data** | ❌ Limited | ✅ Unlimited |
 | **Rate Limits** | Strict quotas | ✅ Generous |
 | **Cost** | Free (limited) | ✅ $0.015/snapshot |
@@ -117,12 +116,10 @@ We built ContentStats.io to solve these exact problems.
     **Official TikTok API:**
     - Basic metrics only
     - Daily updates (at best)
-    - No bot detection
     
     **ContentStats.io:**
     - ✅ Complete metrics (views, likes, comments, shares, saves)
     - ✅ Hourly snapshots
-    - ✅ AI-powered bot detection
     - ✅ Growth pattern analysis
     - ✅ Engagement quality scores
   </Tab>
@@ -159,10 +156,6 @@ async function vetInfluencer(videoUrl) {
   await sleep(3 * 24 * 60 * 60 * 1000); // Wait 3 days
   
   const video = await getVideo(data.id);
-  
-  if (video.bot_confidence > 0.5) {
-    return { approved: false, reason: 'High bot activity detected' };
-  }
   
   return { approved: true, engagement_rate: calculateRate(video) };
 }
@@ -268,7 +261,6 @@ If you're currently using TikTok's official API:
   - Requires approval (2-8 weeks)
   - Only tracks YOUR videos
   - Has strict rate limits
-  - No bot detection
 </Info>
 
 For **competitor analysis** and **influencer vetting**, you literally cannot use TikTok's official API. ContentStats.io is your only option.
@@ -291,7 +283,7 @@ For **competitor analysis** and **influencer vetting**, you literally cannot use
   <Accordion title="Can I still use TikTok's official API?">
     Absolutely! Use both:
     - **TikTok API**: For your own videos and user data
-    - **ContentStats.io**: For competitor tracking and bot detection
+    - **ContentStats.io**: For competitor tracking and hourly snapshots
   </Accordion>
   
   <Accordion title="What data can't I get?">

@@ -1,12 +1,12 @@
 ---
 title: "YouTube Analytics API Alternative"
 seoTitle: "YouTube Analytics API Alternative | No Quotas or Approval"
-description: "Alternative to YouTube's official analytics API. Track any YouTube video without quota limits. Get hourly snapshots, bot detection, and unlimited historical data."
+description: "Alternative to YouTube's official analytics API. Track any YouTube video without quota limits. Get hourly snapshots and unlimited historical data."
 ---
 
 ## YouTube Video Tracking Without API Quotas
 
-Track YouTube video performance without dealing with YouTube's Data API quotas, OAuth complexity, or approval processes. Get hourly snapshots and AI-powered bot detection through a simple REST API.
+Track YouTube video performance without dealing with YouTube's Data API quotas, OAuth complexity, or approval processes. Get hourly snapshots through a simple REST API.
 
 <CardGroup cols={2}>
   <Card
@@ -74,8 +74,6 @@ Track YouTube video performance without dealing with YouTube's Data API quotas, 
 | **Likes** | Like count | Hourly |
 | **Comments** | Comment count | Hourly |
 
-Plus **bot analysis** for engagement quality.
-
 ## Quick Start
 
 ```bash
@@ -113,7 +111,6 @@ curl -X POST https://contentstats.io/api/v1/videos/track \
       "comments": "1250150"
     }
   ],
-  "bot_analysis": {
     "overall_confidence": 0.08,
     "engagement_velocity_score": 0.05,
     "comment_quality_score": 0.12
@@ -146,7 +143,6 @@ curl -X POST https://contentstats.io/api/v1/videos/track \
 | **Authentication** | OAuth 2.0 | ✅ API Key |
 | **Track Any Video** | Limited | ✅ Yes |
 | **Hourly Tracking** | ❌ Manual | ✅ Automatic |
-| **Bot Detection** | ❌ No | ✅ Built-in |
 | **Historical Data** | ❌ Limited | ✅ Unlimited |
 | **Cost** | Free (quotas) | $0.015/snapshot |
 
@@ -158,35 +154,6 @@ Cost = Duration (days) × 24 hours × $0.015
 Example for 7 days:
 7 × 24 × $0.015 = $2.52 per video
 ```
-
-## Bot Detection for YouTube
-
-Our AI detects fake engagement on YouTube:
-
-<AccordionGroup>
-  <Accordion title="View Bot Detection">
-    Identifies suspicious view patterns:
-    - Sudden view spikes
-    - Bot farm traffic
-    - Click farm patterns
-    - Geographic anomalies
-  </Accordion>
-  
-  <Accordion title="Like/Dislike Ratio Analysis">
-    Analyzes engagement ratios:
-    - Unusual like-to-view ratio
-    - Suspicious engagement velocity
-    - Bot-driven like patterns
-  </Accordion>
-  
-  <Accordion title="Comment Quality Scoring">
-    Evaluates comment authenticity:
-    - Generic/spammy comments
-    - Bot-like language patterns
-    - Coordinated commenting
-    - Profile quality analysis
-  </Accordion>
-</AccordionGroup>
 
 ## Common Questions
 

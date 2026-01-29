@@ -1,7 +1,7 @@
 ---
 title: "Get Video"
 api: "GET /api/v1/videos/{id}"
-description: "Get detailed video data including all snapshots and bot analysis."
+description: "Get detailed video data including all snapshots."
 ---
 
 ## Endpoint
@@ -10,7 +10,7 @@ description: "Get detailed video data including all snapshots and bot analysis."
 GET https://contentstats.io/api/v1/videos/{id}
 ```
 
-Retrieve complete data for a tracked video, including all hourly snapshots and detailed bot analysis.
+Retrieve complete data for a tracked video, including all hourly snapshots.
 
 ## Authentication
 
@@ -46,10 +46,6 @@ Retrieve complete data for a tracked video, including all hourly snapshots and d
 
 <ResponseField name="status" type="string">
   Current status: `monitoring`, `completed`, `paused`, `error`, `cancelled`
-</ResponseField>
-
-<ResponseField name="bot_confidence" type="number">
-  Overall bot detection score (0.0 - 1.0)
 </ResponseField>
 
 <ResponseField name="monitoring_started" type="string">
@@ -114,66 +110,6 @@ Retrieve complete data for a tracked video, including all hourly snapshots and d
   </Expandable>
 </ResponseField>
 
-<ResponseField name="bot_analysis" type="object">
-  Detailed bot detection analysis
-  
-  <Expandable title="Bot Analysis">
-    <ResponseField name="overall_confidence" type="number">
-      Overall bot score (0.0 - 1.0)
-    </ResponseField>
-    
-    <ResponseField name="engagement_velocity_score" type="number">
-      Engagement speed analysis
-    </ResponseField>
-    
-    <ResponseField name="comment_quality_score" type="number">
-      Comment authenticity score
-    </ResponseField>
-    
-    <ResponseField name="timing_pattern_score" type="number">
-      Timing pattern analysis
-    </ResponseField>
-    
-    <ResponseField name="ratio_analysis_score" type="number">
-      Metric ratio analysis
-    </ResponseField>
-    
-    <ResponseField name="channel_context_score" type="number">
-      Account context analysis
-    </ResponseField>
-    
-    <ResponseField name="patterns" type="object">
-      Detected patterns
-    </ResponseField>
-    
-    <ResponseField name="flags" type="array">
-      Bot detection flags
-      
-      <Expandable title="Flag Object">
-        <ResponseField name="type" type="string">
-          Flag type
-        </ResponseField>
-        
-        <ResponseField name="severity" type="string">
-          `low`, `medium`, or `high`
-        </ResponseField>
-        
-        <ResponseField name="description" type="string">
-          Human-readable description
-        </ResponseField>
-        
-        <ResponseField name="evidence" type="object">
-          Supporting evidence
-        </ResponseField>
-        
-        <ResponseField name="detected_at" type="string">
-          When flag was raised
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
 <ResponseField name="created_at" type="string">
   When tracking started
 </ResponseField>
@@ -205,7 +141,6 @@ const video = await response.json();
 // Get latest snapshot
 const latest = video.snapshots[video.snapshots.length - 1];
 console.log('Latest views:', latest.views);
-console.log('Bot score:', video.bot_confidence);
 
 // Calculate growth
 if (video.snapshots.length >= 2) {
@@ -256,7 +191,6 @@ $video = json_decode($response, true);
 
 echo "Platform: " . $video['platform'] . "\n";
 echo "Snapshots: " . count($video['snapshots']) . "\n";
-echo "Bot confidence: " . $video['bot_confidence'] . "\n";
 ?>
 ```
 </CodeGroup>
@@ -270,7 +204,6 @@ echo "Bot confidence: " . $video['bot_confidence'] . "\n";
   "video_link": "https://www.tiktok.com/@user/video/7234567890",
   "platform": "tiktok",
   "status": "monitoring",
-  "bot_confidence": 0.18,
   "monitoring_started": "2024-01-29T10:00:00.000Z",
   "monitoring_duration_days": 7,
   "days_remaining": 5.5,
@@ -304,31 +237,6 @@ echo "Bot confidence: " . $video['bot_confidence'] . "\n";
       "provider": "render"
     }
   ],
-  "bot_analysis": {
-    "overall_confidence": 0.18,
-    "engagement_velocity_score": 0.12,
-    "comment_quality_score": 0.21,
-    "timing_pattern_score": 0.15,
-    "ratio_analysis_score": 0.19,
-    "channel_context_score": 0.16,
-    "patterns": {
-      "unusual_engagement_spike": false,
-      "coordinated_commenting": false,
-      "suspicious_timing": false
-    },
-    "flags": [
-      {
-        "type": "minor_velocity_spike",
-        "severity": "low",
-        "description": "Slightly elevated engagement velocity detected",
-        "evidence": {
-          "spike_time": "2024-01-29T14:00:00.000Z",
-          "velocity_increase": "15%"
-        },
-        "detected_at": "2024-01-29T15:00:00.000Z"
-      }
-    ]
-  },
   "created_at": "2024-01-29T10:00:00.000Z",
   "last_updated": "2024-01-29T11:00:00.000Z"
 }
