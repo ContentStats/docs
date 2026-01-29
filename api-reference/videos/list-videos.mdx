@@ -1,0 +1,456 @@
+---
+title: "List Videos"
+api: "GET /api/v1/videos"
+description: "Get all tracked videos with optional filtering by platform and status."
+---
+
+## Endpoint
+
+```http
+GET https://contentstats.io/api/v1/videos
+```
+
+Retrieve all videos you're tracking, with optional filters for platform and status.
+
+## Authentication
+
+<ParamField header="X-API-Key" type="string" required>
+  Your API key from the [dashboard](https://contentstats.io/dashboard/api-keys)
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="platform" type="string">
+  Filter by platform
+  
+  **Options:** `tiktok`, `youtube`, `instagram`, `twitter`
+  
+  **Example:** `?platform=tiktok`
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by tracking status
+  
+  **Options:** `monitoring`, `completed`, `paused`, `error`, `cancelled`
+  
+  **Example:** `?status=monitoring`
+</ParamField>
+
+<ParamField query="limit" type="integer">
+  Number of results to return (1-100)
+  
+  **Default:** 50
+  
+  **Example:** `?limit=100`
+</ParamField>
+
+## Response
+
+<ResponseField name="videos" type="array">
+  Array of video objects
+  
+  <Expandable title="Video Object">
+    <ResponseField name="id" type="string">
+      Unique video identifier
+    </ResponseField>
+    
+    <ResponseField name="job_id" type="string">
+      External job ID
+    </ResponseField>
+    
+    <ResponseField name="video_link" type="string">
+      Video URL
+    </ResponseField>
+    
+    <ResponseField name="platform" type="string">
+      Platform: `tiktok`, `youtube`, `instagram`, `twitter`
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Current status
+    </ResponseField>
+    
+    <ResponseField name="bot_confidence" type="number">
+      Bot detection score (0.0 - 1.0)
+    </ResponseField>
+    
+    <ResponseField name="monitoring_started" type="string">
+      ISO 8601 timestamp
+    </ResponseField>
+    
+    <ResponseField name="monitoring_duration_days" type="integer">
+      Total tracking duration
+    </ResponseField>
+    
+    <ResponseField name="days_remaining" type="number">
+      Days left in tracking
+    </ResponseField>
+    
+    <ResponseField name="current_metadata" type="object">
+      Latest video metadata
+    </ResponseField>
+    
+    <ResponseField name="bot_analysis" type="object">
+      Bot detection analysis
+    </ResponseField>
+    
+    <ResponseField name="created_at" type="string">
+      When tracking started
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total" type="integer">
+  Number of videos in response
+</ResponseField>
+
+<ResponseField name="limit" type="integer">
+  Applied limit
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+```bash cURL - All Videos
+curl "https://contentstats.io/api/v1/videos" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+```bash cURL - Filter by Platform
+curl "https://contentstats.io/api/v1/videos?platform=tiktok&status=monitoring" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+```javascript JavaScript
+// Get all TikTok videos currently being monitored
+const response = await fetch(
+  'https://contentstats.io/api/v1/videos?platform=tiktok&status=monitoring',
+  {
+    headers: {
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    }
+  }
+);
+
+const data = await response.json();
+
+console.log(`Tracking ${data.total} TikTok videos`);
+data.videos.forEach(video => {
+  console.log(`${video.video_link}: ${video.days_remaining} days left`);
+});
+```
+
+```python Python
+import requests
+import os
+
+# Get all videos with high bot scores
+response = requests.get(
+    'https://contentstats.io/api/v1/videos',
+    headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+)
+
+data = response.json()
+
+# Filter by bot confidence
+suspicious = [
+    v for v in data['videos']
+    if v['bot_confidence'] > 0.5
+]
+
+print(f"Found {len(suspicious)} videos with high bot activity")
+```
+
+```php PHP
+<?php
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+    CURLOPT_URL => 'https://contentstats.io/api/v1/videos?platform=youtube&limit=100',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+    ]
+]);
+
+$response = curl_exec($curl);
+$data = json_decode($response, true);
+
+echo "Total YouTube videos: " . $data['total'];
+?>
+```
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "videos": [
+    {
+      "id": "cm5abc123",
+      "job_id": "job_xyz789",
+      "video_link": "https://www.tiktok.com/@user/video/123",
+      "platform": "tiktok",
+      "status": "monitoring",
+      "bot_confidence": 0.18,
+      "monitoring_started": "2024-01-29T10:00:00.000Z",
+      "monitoring_duration_days": 7,
+      "days_remaining": 5.5,
+      "current_metadata": {
+        "title": "Viral Dance Challenge",
+        "creator": "@user"
+      },
+      "bot_analysis": {
+        "overall_confidence": 0.18,
+        "engagement_velocity_score": 0.15,
+        "comment_quality_score": 0.21,
+        "timing_pattern_score": 0.16
+      },
+      "created_at": "2024-01-29T10:00:00.000Z"
+    },
+    {
+      "id": "cm5def456",
+      "job_id": "job_abc456",
+      "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "platform": "youtube",
+      "status": "completed",
+      "bot_confidence": 0.05,
+      "monitoring_started": "2024-01-22T10:00:00.000Z",
+      "monitoring_duration_days": 7,
+      "days_remaining": 0,
+      "current_metadata": {
+        "title": "Never Gonna Give You Up"
+      },
+      "bot_analysis": {
+        "overall_confidence": 0.05,
+        "engagement_velocity_score": 0.03,
+        "comment_quality_score": 0.07
+      },
+      "created_at": "2024-01-22T10:00:00.000Z"
+    }
+  ],
+  "total": 2,
+  "limit": 50
+}
+```
+
+## Use Cases
+
+### Dashboard - Active Videos
+
+```javascript
+async function getActiveVideos() {
+  const response = await fetch(
+    'https://contentstats.io/api/v1/videos?status=monitoring',
+    { headers: { 'X-API-Key': apiKey } }
+  );
+  
+  const data = await response.json();
+  
+  return data.videos.map(v => ({
+    id: v.id,
+    platform: v.platform,
+    url: v.video_link,
+    daysLeft: v.days_remaining,
+    botScore: v.bot_confidence
+  }));
+}
+```
+
+### Find Videos by Bot Score
+
+```python
+def get_suspicious_videos(min_confidence=0.5):
+    response = requests.get(
+        'https://contentstats.io/api/v1/videos',
+        headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+    )
+    
+    data = response.json()
+    
+    return [
+        v for v in data['videos']
+        if v['bot_confidence'] >= min_confidence
+    ]
+
+# Get videos likely using bots
+suspicious = get_suspicious_videos(0.5)
+for video in suspicious:
+    print(f"{video['video_link']}: {video['bot_confidence']:.2f}")
+```
+
+### Platform-Specific Analytics
+
+```javascript
+async function getPlatformStats(platform) {
+  const response = await fetch(
+    `https://contentstats.io/api/v1/videos?platform=${platform}`,
+    { headers: { 'X-API-Key': apiKey } }
+  );
+  
+  const data = await response.json();
+  
+  const stats = {
+    total: data.total,
+    active: data.videos.filter(v => v.status === 'monitoring').length,
+    avgBotScore: data.videos.reduce((sum, v) => sum + v.bot_confidence, 0) / data.total,
+    totalDaysTracking: data.videos.reduce((sum, v) => sum + v.monitoring_duration_days, 0)
+  };
+  
+  return stats;
+}
+
+const tiktokStats = await getPlatformStats('tiktok');
+console.log('TikTok:', tiktokStats);
+```
+
+## Combining Filters
+
+```bash
+# Get all completed TikTok videos
+curl "https://contentstats.io/api/v1/videos?platform=tiktok&status=completed&limit=100" \
+  -H "X-API-Key: YOUR_KEY"
+
+# Get first 10 monitoring YouTube videos
+curl "https://contentstats.io/api/v1/videos?platform=youtube&status=monitoring&limit=10" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+## Pagination
+
+The API returns up to 100 videos per request. For more videos:
+
+```javascript
+async function getAllVideos() {
+  const allVideos = [];
+  let hasMore = true;
+  let limit = 100;
+  
+  // Note: Current API doesn't support offset
+  // This example shows the pattern for when pagination is added
+  
+  const response = await fetch(
+    `https://contentstats.io/api/v1/videos?limit=${limit}`,
+    { headers: { 'X-API-Key': apiKey } }
+  );
+  
+  const data = await response.json();
+  allVideos.push(...data.videos);
+  
+  return allVideos;
+}
+```
+
+<Info>
+  **Coming soon:** Cursor-based pagination for large result sets
+</Info>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="filter" title="Use Filters to Reduce Response Size">
+    Only request what you need:
+    
+    ```javascript
+    // ❌ Don't: Get all videos when you only need TikTok
+    const all = await fetch('/api/v1/videos');
+    const tiktok = all.videos.filter(v => v.platform === 'tiktok');
+    
+    // ✅ Do: Filter server-side
+    const tiktok = await fetch('/api/v1/videos?platform=tiktok');
+    ```
+  </Accordion>
+  
+  <Accordion icon="database" title="Cache Responses">
+    Videos don't change frequently:
+    
+    ```javascript
+    const cache = new Map();
+    const TTL = 5 * 60 * 1000; // 5 minutes
+    
+    async function getCachedVideos(platform) {
+      const key = `videos_${platform}`;
+      const cached = cache.get(key);
+      
+      if (cached && Date.now() - cached.timestamp < TTL) {
+        return cached.data;
+      }
+      
+      const response = await fetch(
+        `https://contentstats.io/api/v1/videos?platform=${platform}`,
+        { headers: { 'X-API-Key': apiKey } }
+      );
+      
+      const data = await response.json();
+      cache.set(key, { data, timestamp: Date.now() });
+      
+      return data;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="clock" title="Poll Status Changes">
+    Monitor video status changes:
+    
+    ```javascript
+    async function monitorStatusChanges() {
+      const previous = new Map();
+      
+      setInterval(async () => {
+        const response = await fetch('/api/v1/videos?status=monitoring');
+        const data = await response.json();
+        
+        data.videos.forEach(video => {
+          const prev = previous.get(video.id);
+          
+          if (prev && prev.days_remaining !== video.days_remaining) {
+            console.log(`${video.id}: ${video.days_remaining} days left`);
+          }
+          
+          previous.set(video.id, video);
+        });
+      }, 60 * 60 * 1000); // Check hourly
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Responses
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "API key required"
+}
+```
+
+Missing or invalid API key.
+
+### 400 Bad Request
+
+```json
+{
+  "error": "Invalid platform",
+  "valid_platforms": ["tiktok", "youtube", "instagram", "twitter"]
+}
+```
+
+Invalid query parameter value.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Get Video Details" icon="circle-info" href="/api-reference/videos/get-video">
+    Retrieve individual video with snapshots
+  </Card>
+  <Card title="Track New Video" icon="play" href="/api-reference/videos/track-video">
+    Start tracking a video
+  </Card>
+  <Card title="Stop Tracking" icon="stop" href="/api-reference/videos/stop-video">
+    End monitoring early
+  </Card>
+  <Card title="Get Usage" icon="chart-bar" href="/api-reference/usage/get-usage">
+    Check balance and usage
+  </Card>
+</CardGroup>

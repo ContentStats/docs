@@ -1,0 +1,292 @@
+---
+title: "Error Handling"
+seoTitle: "API Error Codes & Handling | ContentStats.io"
+description: "Complete guide to ContentStats.io API error codes, status codes, and error handling best practices."
+---
+
+## Error Response Format
+
+All errors return JSON with an `error` field:
+
+```json
+{
+  "error": "Error message here",
+  "details": { /* Additional context */ }
+}
+```
+
+## HTTP Status Codes
+
+| Code | Status | Meaning |
+|------|--------|---------|
+| 200 | OK | Request successful |
+| 201 | Created | Resource created successfully |
+| 400 | Bad Request | Invalid request parameters |
+| 401 | Unauthorized | Missing or invalid API key |
+| 402 | Payment Required | Insufficient balance |
+| 403 | Forbidden | Access denied to resource |
+| 404 | Not Found | Resource not found |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Internal Server Error | Server error (contact support) |
+
+## Common Errors
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "API key required"
+}
+```
+
+**Causes:**
+- Missing `X-API-Key` header
+- Invalid API key format
+- Deleted or expired key
+
+**Fix:**
+```bash
+# Ensure header is present and correct
+curl https://contentstats.io/api/v1/videos \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+### 402 Payment Required
+
+```json
+{
+  "error": "Insufficient balance",
+  "balance": 0.50,
+  "estimated_cost": 2.52,
+  "required": 2.02
+}
+```
+
+**Causes:**
+- Not enough credit for operation
+- Balance below estimated cost
+
+**Fix:**
+[Add credits](https://contentstats.io/dashboard/billing) to your account.
+
+### 400 Bad Request
+
+```json
+{
+  "error": "Invalid request",
+  "details": [
+    {
+      "field": "video_link",
+      "message": "Invalid URL format"
+    }
+  ]
+}
+```
+
+**Causes:**
+- Invalid video URL
+- Missing required fields
+- Invalid parameter values
+
+**Fix:**
+Validate request body before sending:
+
+```javascript
+const schema = {
+  video_link: (url) => /^https?:\/\/.+/.test(url),
+  duration_days: (days) => days >= 1 && days <= 30
+};
+
+if (!schema.video_link(data.video_link)) {
+  throw new Error('Invalid video_link format');
+}
+```
+
+### 404 Not Found
+
+```json
+{
+  "error": "Video not found"
+}
+```
+
+**Causes:**
+- Invalid video ID
+- Video deleted
+- Access to different organization's resource
+
+**Fix:**
+Verify the video ID and ensure it belongs to your organization.
+
+### 429 Rate Limit Exceeded
+
+```json
+{
+  "error": "Rate limit exceeded",
+  "limit": 60,
+  "reset": 1640995200
+}
+```
+
+**Causes:**
+- Too many requests in short time
+- Exceeded plan rate limit
+
+**Fix:**
+Implement exponential backoff:
+
+```javascript
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    const response = await fetch(url, options);
+    
+    if (response.status === 429) {
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+      const waitMs = (resetTime * 1000) - Date.now();
+      
+      await new Promise(resolve => setTimeout(resolve, waitMs));
+      continue;
+    }
+    
+    return response;
+  }
+  
+  throw new Error('Max retries exceeded');
+}
+```
+
+## Error Handling Best Practices
+
+<AccordionGroup>
+  <Accordion icon="rotate" title="Implement Retry Logic">
+    ```javascript
+    async function apiCall(endpoint, options) {
+      const maxRetries = 3;
+      const backoff = [1000, 2000, 4000]; // ms
+      
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          const response = await fetch(endpoint, options);
+          
+          if (response.ok) return await response.json();
+          
+          // Don't retry client errors (except 429)
+          if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+            throw new Error(await response.text());
+          }
+          
+          // Retry server errors
+          if (i < maxRetries - 1) {
+            await new Promise(resolve => setTimeout(resolve, backoff[i]));
+          }
+        } catch (error) {
+          if (i === maxRetries - 1) throw error;
+        }
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="code" title="Handle All Status Codes">
+    ```typescript
+    async function trackVideo(url: string) {
+      const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.API_KEY!
+        },
+        body: JSON.stringify({ video_link: url, duration_days: 7 })
+      });
+      
+      const data = await response.json();
+      
+      switch (response.status) {
+        case 201:
+          return data;
+        case 400:
+          throw new ValidationError(data.error, data.details);
+        case 401:
+          throw new AuthError('Invalid API key');
+        case 402:
+          throw new PaymentError(`Insufficient balance: $${data.balance}`);
+        case 429:
+          throw new RateLimitError('Rate limit exceeded', data.reset);
+        case 500:
+          throw new ServerError('Internal error - contact support');
+        default:
+          throw new Error(`Unexpected status: ${response.status}`);
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="list" title="Log Errors for Debugging">
+    ```python
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    def track_video(url):
+        try:
+            response = requests.post(
+                'https://contentstats.io/api/v1/videos/track',
+                headers={'X-API-Key': os.environ['API_KEY']},
+                json={'video_link': url, 'duration_days': 7}
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"API error: {e.response.status_code} - {e.response.text}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error: {str(e)}")
+            raise
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Video-Specific Errors
+
+### Video Not Found or Private
+
+```json
+{
+  "error": "Video not found or is private"
+}
+```
+
+**Causes:**
+- Video is private or deleted
+- Invalid video URL
+- Age-restricted content
+
+**Fix:**
+Ensure video is public and accessible without login.
+
+### Platform Error
+
+```json
+{
+  "error": "Failed to fetch video data from platform"
+}
+```
+
+**Causes:**
+- Platform temporarily unavailable
+- Video removed by platform
+- Platform blocking requests
+
+**Fix:**
+Retry after a few minutes. If persists, contact support.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Rate Limits" href="/api-reference/rate-limits">
+    Understand rate limiting
+  </Card>
+  <Card title="API Reference" href="/api-reference/introduction">
+    Complete API documentation
+  </Card>
+</CardGroup>

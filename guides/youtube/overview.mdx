@@ -1,0 +1,242 @@
+---
+title: "YouTube Analytics API Alternative"
+seoTitle: "YouTube Analytics API Alternative | No Quotas or Approval"
+description: "Alternative to YouTube's official analytics API. Track any YouTube video without quota limits. Get hourly snapshots, bot detection, and unlimited historical data."
+---
+
+## YouTube Video Tracking Without API Quotas
+
+Track YouTube video performance without dealing with YouTube's Data API quotas, OAuth complexity, or approval processes. Get hourly snapshots and AI-powered bot detection through a simple REST API.
+
+<CardGroup cols={2}>
+  <Card
+    title="Get YouTube Stats"
+    icon="play"
+    href="/guides/youtube/get-youtube-stats"
+  >
+    Step-by-step tracking guide
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/videos/track-video"
+  >
+    Technical documentation
+  </Card>
+</CardGroup>
+
+## Why Use Our YouTube API Alternative?
+
+<Tabs>
+  <Tab title="No Quotas">
+    YouTube's Data API has strict daily quotas:
+    - 10,000 units per day (default)
+    - Simple query = 1-100 units
+    - Quota increases require application
+    
+    **With ContentStats.io:**
+    - ✅ No daily limits
+    - ✅ Unlimited requests (within rate limits)
+    - ✅ No quota application needed
+  </Tab>
+  
+  <Tab title="Track Any Video">
+    YouTube API restrictions:
+    - Complex OAuth for user data
+    - Limited public data access
+    - Channel ownership required for detailed analytics
+    
+    **Our approach:**
+    - ✅ Track ANY public video
+    - ✅ No OAuth needed
+    - ✅ Simple API key auth
+    - ✅ Competitor tracking enabled
+  </Tab>
+  
+  <Tab title="Hourly Updates">
+    YouTube Data API:
+    - ❌ No automated tracking
+    - ❌ Must poll manually
+    - ❌ Counts against quota
+    
+    **ContentStats.io:**
+    - ✅ Automatic hourly snapshots
+    - ✅ Real-time performance tracking
+    - ✅ Historical timeline data
+  </Tab>
+</Tabs>
+
+## YouTube Metrics Available
+
+| Metric | Description | Update Frequency |
+|--------|-------------|------------------|
+| **Views** | Total view count | Hourly |
+| **Likes** | Like count | Hourly |
+| **Comments** | Comment count | Hourly |
+
+Plus **bot analysis** for engagement quality.
+
+## Quick Start
+
+```bash
+curl -X POST https://contentstats.io/api/v1/videos/track \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: cs_live_YOUR_KEY" \
+  -d '{
+    "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration_days": 7
+  }'
+```
+
+<Info>
+  We support all YouTube URL formats: `youtube.com/watch?v=...`, `youtu.be/...`, `youtube.com/embed/...`
+</Info>
+
+## Example Response
+
+```json
+{
+  "id": "cm5xyz789",
+  "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "platform": "youtube",
+  "snapshots": [
+    {
+      "snapshot_time": "2024-01-29T10:00:00Z",
+      "views": "1425000000",
+      "likes": "14000000",
+      "comments": "1250000"
+    },
+    {
+      "snapshot_time": "2024-01-29T11:00:00Z",
+      "views": "1425055000",
+      "likes": "14001200",
+      "comments": "1250150"
+    }
+  ],
+  "bot_analysis": {
+    "overall_confidence": 0.08,
+    "engagement_velocity_score": 0.05,
+    "comment_quality_score": 0.12
+  }
+}
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Competitor Analysis" icon="chart-mixed">
+    Track competitor YouTube performance without channel access
+  </Card>
+  <Card title="Viral Tracking" icon="fire">
+    Monitor trending videos and catch viral moments early
+  </Card>
+  <Card title="Campaign Monitoring" icon="megaphone">
+    Track influencer campaign performance in real-time
+  </Card>
+  <Card title="Content Research" icon="magnifying-glass-chart">
+    Analyze what content performs in your niche
+  </Card>
+</CardGroup>
+
+## Comparison with YouTube Data API
+
+| Feature | YouTube Data API | ContentStats.io |
+|---------|------------------|-----------------|
+| **Daily Quota** | 10,000 units | ✅ Unlimited |
+| **Authentication** | OAuth 2.0 | ✅ API Key |
+| **Track Any Video** | Limited | ✅ Yes |
+| **Hourly Tracking** | ❌ Manual | ✅ Automatic |
+| **Bot Detection** | ❌ No | ✅ Built-in |
+| **Historical Data** | ❌ Limited | ✅ Unlimited |
+| **Cost** | Free (quotas) | $0.015/snapshot |
+
+## Pricing
+
+```
+Cost = Duration (days) × 24 hours × $0.015
+
+Example for 7 days:
+7 × 24 × $0.015 = $2.52 per video
+```
+
+## Bot Detection for YouTube
+
+Our AI detects fake engagement on YouTube:
+
+<AccordionGroup>
+  <Accordion title="View Bot Detection">
+    Identifies suspicious view patterns:
+    - Sudden view spikes
+    - Bot farm traffic
+    - Click farm patterns
+    - Geographic anomalies
+  </Accordion>
+  
+  <Accordion title="Like/Dislike Ratio Analysis">
+    Analyzes engagement ratios:
+    - Unusual like-to-view ratio
+    - Suspicious engagement velocity
+    - Bot-driven like patterns
+  </Accordion>
+  
+  <Accordion title="Comment Quality Scoring">
+    Evaluates comment authenticity:
+    - Generic/spammy comments
+    - Bot-like language patterns
+    - Coordinated commenting
+    - Profile quality analysis
+  </Accordion>
+</AccordionGroup>
+
+## Common Questions
+
+<AccordionGroup>
+  <Accordion title="Can I track private YouTube videos?">
+    No, only **public** and **unlisted** videos can be tracked. Private videos are not accessible.
+  </Accordion>
+  
+  <Accordion title="Do I need YouTube API credentials?">
+    No! We handle all YouTube interactions. You only need a ContentStats.io API key.
+  </Accordion>
+  
+  <Accordion title="How does this compare to YouTube Analytics?">
+    YouTube Analytics requires channel ownership. ContentStats.io works for ANY public video, perfect for competitor analysis.
+  </Accordion>
+  
+  <Accordion title="Can I get subscriber counts?">
+    Currently, we track video-level metrics only. Channel-level metrics (subscribers) coming soon.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="How to Get YouTube Stats"
+    icon="book"
+    href="/guides/youtube/get-youtube-stats"
+  >
+    Complete tracking guide
+  </Card>
+  <Card
+    title="YouTube vs Official API"
+    icon="arrows-rotate"
+    href="/guides/youtube/youtube-analytics-alternative"
+  >
+    Detailed comparison
+  </Card>
+  <Card
+    title="API Reference"
+    icon="terminal"
+    href="/api-reference/introduction"
+  >
+    Technical docs
+  </Card>
+  <Card
+    title="Quickstart"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get started now
+  </Card>
+</CardGroup>

@@ -1,80 +1,334 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: "Quickstart Guide"
+seoTitle: "Get Started with ContentStats.io API in 5 Minutes"
+description: "Start tracking social media videos in minutes. Create your API key, make your first request, and get hourly snapshots of TikTok, YouTube, Instagram, and Twitter performance."
 ---
 
-## Get started in three steps
+## Get Started in 5 Minutes
 
-Get your documentation site running locally and make your first customization.
+This guide will help you make your first API request and start tracking social media videos.
 
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+<Steps>
+  <Step title="Create Your Account">
+    Sign up at [contentstats.io/auth/signup](https://contentstats.io/auth/signup)
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+    You'll receive **$5.00 free credit** (~333 free snapshots) to get started.
+  </Step>
 
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+  <Step title="Generate an API Key">
+    1. Go to your [Dashboard](https://contentstats.io/dashboard)
+    2. Navigate to **API Keys**
+    3. Click **"Create New Key"**
+    4. Copy your key (it starts with `cs_live_...`)
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
+    <Warning>
+      Your API key is shown **only once**. Store it securely and never commit it to version control.
+    </Warning>
+  </Step>
+
+  <Step title="Track Your First Video">
+    Use the `/api/v1/videos/track` endpoint to start monitoring:
+
+    <CodeGroup>
+      ```bash cURL
+      curl -X POST https://contentstats.io/api/v1/videos/track \
+        -H "Content-Type: application/json" \
+        -H "X-API-Key: cs_live_YOUR_KEY" \
+        -d '{
+          "video_link": "https://www.tiktok.com/@user/video/123",
+          "duration_days": 7
+        }'
+      ```
+
+      ```javascript JavaScript
+      const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'cs_live_YOUR_KEY'
+        },
+        body: JSON.stringify({
+          video_link: 'https://www.tiktok.com/@user/video/123',
+          duration_days: 7
+        })
+      });
+
+      const data = await response.json();
+      console.log(data);
+      ```
+
+      ```python Python
+      import requests
+
+      response = requests.post(
+          'https://contentstats.io/api/v1/videos/track',
+          headers={
+              'Content-Type': 'application/json',
+              'X-API-Key': 'cs_live_YOUR_KEY'
+          },
+          json={
+              'video_link': 'https://www.tiktok.com/@user/video/123',
+              'duration_days': 7
+          }
+      )
+
+      data = response.json()
+      print(data)
+      ```
+
+      ```php PHP
+      <?php
+      $curl = curl_init();
+
+      curl_setopt_array($curl, [
+          CURLOPT_URL => 'https://contentstats.io/api/v1/videos/track',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_POST => true,
+          CURLOPT_HTTPHEADER => [
+              'Content-Type: application/json',
+              'X-API-Key: cs_live_YOUR_KEY'
+          ],
+          CURLOPT_POSTFIELDS => json_encode([
+              'video_link' => 'https://www.tiktok.com/@user/video/123',
+              'duration_days' => 7
+          ])
+      ]);
+
+      $response = curl_exec($curl);
+      $data = json_decode($response, true);
+      print_r($data);
+      ?>
+      ```
+    </CodeGroup>
+
+    <Accordion title="Response">
+      ```json
+      {
+        "id": "cm5abc123def",
+        "job_id": "job_xyz789",
+        "video_link": "https://www.tiktok.com/@user/video/123",
+        "platform": "tiktok",
+        "status": "monitoring",
+        "monitoring_duration_days": 7,
+        "days_remaining": 7,
+        "estimated_cost": 2.52,
+        "created_at": "2024-01-29T10:00:00.000Z"
+      }
+      ```
+    </Accordion>
+  </Step>
+
+  <Step title="Check Video Status">
+    Use the video `id` to get snapshots and bot analysis:
+
+    <CodeGroup>
+      ```bash cURL
+      curl https://contentstats.io/api/v1/videos/cm5abc123def \
+        -H "X-API-Key: cs_live_YOUR_KEY"
+      ```
+
+      ```javascript JavaScript
+      const response = await fetch(
+        'https://contentstats.io/api/v1/videos/cm5abc123def',
+        {
+          headers: {
+            'X-API-Key': 'cs_live_YOUR_KEY'
+          }
+        }
+      );
+
+      const video = await response.json();
+      console.log(video);
+      ```
+
+      ```python Python
+      response = requests.get(
+          'https://contentstats.io/api/v1/videos/cm5abc123def',
+          headers={'X-API-Key': 'cs_live_YOUR_KEY'}
+      )
+
+      video = response.json()
+      print(video)
+      ```
+    </CodeGroup>
+
+    <Accordion title="Response with Snapshots">
+      ```json
+      {
+        "id": "cm5abc123def",
+        "video_link": "https://www.tiktok.com/@user/video/123",
+        "platform": "tiktok",
+        "status": "monitoring",
+        "bot_confidence": 0.23,
+        "snapshots": [
+          {
+            "snapshot_time": "2024-01-29T10:00:00.000Z",
+            "views": "150000",
+            "likes": "12500",
+            "comments": "350",
+            "shares": "890"
+          },
+          {
+            "snapshot_time": "2024-01-29T11:00:00.000Z",
+            "views": "165000",
+            "likes": "13200",
+            "comments": "380",
+            "shares": "920"
+          }
+        ],
+        "bot_analysis": {
+          "overall_confidence": 0.23,
+          "engagement_velocity_score": 0.15,
+          "comment_quality_score": 0.28,
+          "timing_pattern_score": 0.19
+        }
+      }
+      ```
+    </Accordion>
+  </Step>
+</Steps>
+
+## What Happens Next?
+
+Once tracking starts:
+
+1. **Hourly Snapshots**: We collect metrics every hour for the duration you specified
+2. **Bot Analysis**: AI analyzes engagement patterns for authenticity
+3. **Automatic Billing**: Each snapshot costs $0.015, deducted from your balance
+4. **Email Updates**: Get notified when tracking completes or if your balance is low
+
+## Supported Video Links
+
+You can track videos from any of these platforms:
+
+<Tabs>
+  <Tab title="TikTok">
+    ```
+    https://www.tiktok.com/@username/video/1234567890
+    https://vm.tiktok.com/abc123/
+    ```
+    
+    **Metrics**: Views, Likes, Comments, Shares, Saves
+  </Tab>
+  
+  <Tab title="YouTube">
+    ```
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    https://youtu.be/dQw4w9WgXcQ
+    ```
+    
+    **Metrics**: Views, Likes, Comments
+  </Tab>
+  
+  <Tab title="Instagram">
+    ```
+    https://www.instagram.com/p/ABC123/
+    https://www.instagram.com/reel/XYZ789/
+    ```
+    
+    **Metrics**: Likes, Comments, Saves
+  </Tab>
+  
+  <Tab title="Twitter/X">
+    ```
+    https://twitter.com/user/status/1234567890
+    https://x.com/user/status/1234567890
+    ```
+    
+    **Metrics**: Views, Likes, Retweets, Replies
+  </Tab>
+</Tabs>
+
+## Cost Calculation
+
+Understanding your costs:
+
+```
+Cost = Duration (days) × 24 hours × $0.015 per snapshot
+
+Example for 7 days:
+7 × 24 × $0.015 = $2.52
+```
+
+<Info>
+  Your **$5 free credit** covers about 333 snapshots, or ~14 days of tracking a single video.
+</Info>
+
+## Managing Your Balance
+
+Check your usage and balance anytime:
+
+```bash
+curl https://contentstats.io/api/v1/usage \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+<Accordion title="Response">
+  ```json
+  {
+    "balance_usd": 5.00,
+    "total_snapshots": 0,
+    "active_videos": 1,
+    "uncharged_usage_usd": 0.015,
+    "estimated_snapshots_remaining": 333,
+    "cost_per_snapshot": 0.015
+  }
+  ```
 </Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
+## Next Steps
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/authentication"
+  >
+    Learn about API keys and security best practices
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    Explore all available endpoints
+  </Card>
+  <Card
+    title="TikTok Guide"
+    icon="tiktok"
+    href="/guides/tiktok/track-tiktok-videos"
+  >
+    Detailed guide for tracking TikTok videos
+  </Card>
+  <Card
+    title="Error Handling"
+    icon="triangle-exclamation"
+    href="/api-reference/errors"
+  >
+    Handle errors and edge cases
+  </Card>
 </CardGroup>
 
+## Common Questions
+
+<AccordionGroup>
+  <Accordion title="How soon will I get my first snapshot?">
+    The first snapshot is captured within the first hour of tracking. You'll receive hourly updates after that.
+  </Accordion>
+  
+  <Accordion title="Can I stop tracking early?">
+    Yes! Use the [stop endpoint](/api-reference/videos/stop-video) to end monitoring at any time. You'll only pay for snapshots already collected.
+  </Accordion>
+  
+  <Accordion title="What if my balance runs out?">
+    Tracking will automatically pause. Add more credit to resume. Your data is saved and tracking continues from where it left off.
+  </Accordion>
+  
+  <Accordion title="Can I track multiple videos?">
+    Absolutely! Track as many videos as you want across all platforms simultaneously.
+  </Accordion>
+</AccordionGroup>
+
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  Need help? Check our [FAQ](/faq) or [contact support](/support).
 </Note>

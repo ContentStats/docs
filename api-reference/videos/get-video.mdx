@@ -1,0 +1,535 @@
+---
+title: "Get Video"
+api: "GET /api/v1/videos/{id}"
+description: "Get detailed video data including all snapshots and bot analysis."
+---
+
+## Endpoint
+
+```http
+GET https://contentstats.io/api/v1/videos/{id}
+```
+
+Retrieve complete data for a tracked video, including all hourly snapshots and detailed bot analysis.
+
+## Authentication
+
+<ParamField header="X-API-Key" type="string" required>
+  Your API key from the [dashboard](https://contentstats.io/dashboard/api-keys)
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The video ID returned from [Track Video](/api-reference/videos/track-video)
+  
+  **Example:** `cm5abc123def`
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Video identifier
+</ResponseField>
+
+<ResponseField name="job_id" type="string">
+  External job ID
+</ResponseField>
+
+<ResponseField name="video_link" type="string">
+  Original video URL
+</ResponseField>
+
+<ResponseField name="platform" type="string">
+  Platform: `tiktok`, `youtube`, `instagram`, `twitter`
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status: `monitoring`, `completed`, `paused`, `error`, `cancelled`
+</ResponseField>
+
+<ResponseField name="bot_confidence" type="number">
+  Overall bot detection score (0.0 - 1.0)
+</ResponseField>
+
+<ResponseField name="monitoring_started" type="string">
+  When tracking started (ISO 8601)
+</ResponseField>
+
+<ResponseField name="monitoring_duration_days" type="integer">
+  Total tracking duration
+</ResponseField>
+
+<ResponseField name="days_remaining" type="number">
+  Days left in tracking period
+</ResponseField>
+
+<ResponseField name="is_deleted" type="boolean">
+  Whether video was deleted
+</ResponseField>
+
+<ResponseField name="current_metadata" type="object">
+  Latest video metadata (title, creator, etc.)
+</ResponseField>
+
+<ResponseField name="snapshots" type="array">
+  Array of hourly snapshots
+  
+  <Expandable title="Snapshot Object">
+    <ResponseField name="id" type="string">
+      Snapshot identifier
+    </ResponseField>
+    
+    <ResponseField name="snapshot_id" type="string">
+      External snapshot ID
+    </ResponseField>
+    
+    <ResponseField name="snapshot_time" type="string">
+      When snapshot was taken (ISO 8601)
+    </ResponseField>
+    
+    <ResponseField name="views" type="string">
+      View count (BigInt as string)
+    </ResponseField>
+    
+    <ResponseField name="likes" type="string">
+      Like count
+    </ResponseField>
+    
+    <ResponseField name="comments" type="string">
+      Comment count
+    </ResponseField>
+    
+    <ResponseField name="shares" type="string">
+      Share count (if available)
+    </ResponseField>
+    
+    <ResponseField name="saves" type="string">
+      Save count (if available)
+    </ResponseField>
+    
+    <ResponseField name="provider" type="string">
+      Data source
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="bot_analysis" type="object">
+  Detailed bot detection analysis
+  
+  <Expandable title="Bot Analysis">
+    <ResponseField name="overall_confidence" type="number">
+      Overall bot score (0.0 - 1.0)
+    </ResponseField>
+    
+    <ResponseField name="engagement_velocity_score" type="number">
+      Engagement speed analysis
+    </ResponseField>
+    
+    <ResponseField name="comment_quality_score" type="number">
+      Comment authenticity score
+    </ResponseField>
+    
+    <ResponseField name="timing_pattern_score" type="number">
+      Timing pattern analysis
+    </ResponseField>
+    
+    <ResponseField name="ratio_analysis_score" type="number">
+      Metric ratio analysis
+    </ResponseField>
+    
+    <ResponseField name="channel_context_score" type="number">
+      Account context analysis
+    </ResponseField>
+    
+    <ResponseField name="patterns" type="object">
+      Detected patterns
+    </ResponseField>
+    
+    <ResponseField name="flags" type="array">
+      Bot detection flags
+      
+      <Expandable title="Flag Object">
+        <ResponseField name="type" type="string">
+          Flag type
+        </ResponseField>
+        
+        <ResponseField name="severity" type="string">
+          `low`, `medium`, or `high`
+        </ResponseField>
+        
+        <ResponseField name="description" type="string">
+          Human-readable description
+        </ResponseField>
+        
+        <ResponseField name="evidence" type="object">
+          Supporting evidence
+        </ResponseField>
+        
+        <ResponseField name="detected_at" type="string">
+          When flag was raised
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  When tracking started
+</ResponseField>
+
+<ResponseField name="last_updated" type="string">
+  Last data update timestamp
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+```bash cURL
+curl "https://contentstats.io/api/v1/videos/cm5abc123def" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  'https://contentstats.io/api/v1/videos/cm5abc123def',
+  {
+    headers: {
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    }
+  }
+);
+
+const video = await response.json();
+
+// Get latest snapshot
+const latest = video.snapshots[video.snapshots.length - 1];
+console.log('Latest views:', latest.views);
+console.log('Bot score:', video.bot_confidence);
+
+// Calculate growth
+if (video.snapshots.length >= 2) {
+  const previous = video.snapshots[video.snapshots.length - 2];
+  const growth = parseInt(latest.views) - parseInt(previous.views);
+  console.log('Hourly growth:', growth, 'views');
+}
+```
+
+```python Python
+import requests
+import os
+
+response = requests.get(
+    'https://contentstats.io/api/v1/videos/cm5abc123def',
+    headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+)
+
+video = response.json()
+
+# Analyze growth over time
+snapshots = video['snapshots']
+for i in range(1, len(snapshots)):
+    current = snapshots[i]
+    previous = snapshots[i - 1]
+    
+    views_gained = int(current['views']) - int(previous['views'])
+    likes_gained = int(current['likes']) - int(previous['likes'])
+    
+    print(f"{current['snapshot_time']}: +{views_gained} views, +{likes_gained} likes")
+```
+
+```php PHP
+<?php
+$videoId = 'cm5abc123def';
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+    CURLOPT_URL => "https://contentstats.io/api/v1/videos/{$videoId}",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+    ]
+]);
+
+$response = curl_exec($curl);
+$video = json_decode($response, true);
+
+echo "Platform: " . $video['platform'] . "\n";
+echo "Snapshots: " . count($video['snapshots']) . "\n";
+echo "Bot confidence: " . $video['bot_confidence'] . "\n";
+?>
+```
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "id": "cm5abc123def",
+  "job_id": "job_xyz789",
+  "video_link": "https://www.tiktok.com/@user/video/7234567890",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "bot_confidence": 0.18,
+  "monitoring_started": "2024-01-29T10:00:00.000Z",
+  "monitoring_duration_days": 7,
+  "days_remaining": 5.5,
+  "is_deleted": false,
+  "current_metadata": {
+    "title": "Viral Dance Challenge",
+    "creator": "@user",
+    "description": "Join the trend!"
+  },
+  "snapshots": [
+    {
+      "id": "snap_001",
+      "snapshot_id": "external_snap_123",
+      "snapshot_time": "2024-01-29T10:00:00.000Z",
+      "views": "1250000",
+      "likes": "185000",
+      "comments": "4200",
+      "shares": "12500",
+      "saves": "8900",
+      "provider": "render"
+    },
+    {
+      "id": "snap_002",
+      "snapshot_id": "external_snap_124",
+      "snapshot_time": "2024-01-29T11:00:00.000Z",
+      "views": "1298000",
+      "likes": "189000",
+      "comments": "4350",
+      "shares": "12800",
+      "saves": "9100",
+      "provider": "render"
+    }
+  ],
+  "bot_analysis": {
+    "overall_confidence": 0.18,
+    "engagement_velocity_score": 0.12,
+    "comment_quality_score": 0.21,
+    "timing_pattern_score": 0.15,
+    "ratio_analysis_score": 0.19,
+    "channel_context_score": 0.16,
+    "patterns": {
+      "unusual_engagement_spike": false,
+      "coordinated_commenting": false,
+      "suspicious_timing": false
+    },
+    "flags": [
+      {
+        "type": "minor_velocity_spike",
+        "severity": "low",
+        "description": "Slightly elevated engagement velocity detected",
+        "evidence": {
+          "spike_time": "2024-01-29T14:00:00.000Z",
+          "velocity_increase": "15%"
+        },
+        "detected_at": "2024-01-29T15:00:00.000Z"
+      }
+    ]
+  },
+  "created_at": "2024-01-29T10:00:00.000Z",
+  "last_updated": "2024-01-29T11:00:00.000Z"
+}
+```
+
+## Use Cases
+
+### Build Growth Chart
+
+```javascript
+function buildGrowthData(video) {
+  return video.snapshots.map((snapshot, index) => {
+    const hoursSinceStart = index;
+    
+    return {
+      hour: hoursSinceStart,
+      time: snapshot.snapshot_time,
+      views: parseInt(snapshot.views),
+      likes: parseInt(snapshot.likes),
+      comments: parseInt(snapshot.comments)
+    };
+  });
+}
+
+const chartData = buildGrowthData(video);
+// Use with Chart.js, Recharts, etc.
+```
+
+### Calculate Engagement Rate
+
+```python
+def calculate_engagement_rate(snapshot):
+    views = int(snapshot['views'])
+    likes = int(snapshot['likes'])
+    comments = int(snapshot['comments'])
+    
+    total_engagement = likes + comments
+    
+    if views == 0:
+        return 0
+    
+    return (total_engagement / views) * 100
+
+latest = video['snapshots'][-1]
+rate = calculate_engagement_rate(latest)
+print(f"Engagement rate: {rate:.2f}%")
+```
+
+### Export to CSV
+
+```javascript
+function exportToCSV(video) {
+  const headers = ['Time', 'Views', 'Likes', 'Comments', 'Shares', 'Saves'];
+  const rows = video.snapshots.map(s => [
+    s.snapshot_time,
+    s.views,
+    s.likes,
+    s.comments,
+    s.shares || '0',
+    s.saves || '0'
+  ]);
+  
+  const csv = [headers, ...rows]
+    .map(row => row.join(','))
+    .join('\n');
+  
+  return csv;
+}
+
+const csv = exportToCSV(video);
+console.log(csv);
+```
+
+### Detect Viral Moments
+
+```javascript
+function detectViralMoments(snapshots, threshold = 1.5) {
+  const moments = [];
+  
+  for (let i = 1; i < snapshots.length; i++) {
+    const current = snapshots[i];
+    const previous = snapshots[i - 1];
+    
+    const currentViews = parseInt(current.views);
+    const previousViews = parseInt(previous.views);
+    const growth = currentViews - previousViews;
+    
+    // Calculate average hourly growth
+    const avgGrowth = previousViews / i;
+    
+    // Detect if growth is threshold times above average
+    if (growth > avgGrowth * threshold) {
+      moments.push({
+        time: current.snapshot_time,
+        growth: growth,
+        multiplier: (growth / avgGrowth).toFixed(2)
+      });
+    }
+  }
+  
+  return moments;
+}
+
+const viral = detectViralMoments(video.snapshots);
+console.log('Viral moments:', viral);
+```
+
+## Polling Best Practices
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Poll Hourly">
+    Snapshots are collected hourly, so don't poll faster:
+    
+    ```javascript
+    // ❌ Don't poll every minute
+    setInterval(() => fetchVideo(id), 60 * 1000);
+    
+    // ✅ Poll hourly (after first snapshot)
+    setInterval(() => fetchVideo(id), 60 * 60 * 1000);
+    ```
+  </Accordion>
+  
+  <Accordion icon="rotate" title="Use Conditional Requests">
+    Cache and only fetch when updated:
+    
+    ```javascript
+    let lastUpdated = null;
+    
+    async function fetchIfUpdated(id) {
+      const video = await fetchVideo(id);
+      
+      if (video.last_updated === lastUpdated) {
+        console.log('No updates');
+        return null;
+      }
+      
+      lastUpdated = video.last_updated;
+      return video;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="bell" title="Use Webhooks (Coming Soon)">
+    Subscribe to events instead of polling:
+    
+    ```javascript
+    // Coming soon!
+    await webhook.subscribe({
+      event: 'snapshot.created',
+      video_id: 'cm5abc123',
+      url: 'https://yourapp.com/webhook'
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Responses
+
+### 404 Not Found
+
+```json
+{
+  "error": "Video not found"
+}
+```
+
+Invalid video ID or accessing another organization's video.
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "API key required"
+}
+```
+
+Missing or invalid API key.
+
+### 403 Forbidden
+
+```json
+{
+  "error": "Access denied"
+}
+```
+
+Video belongs to a different organization.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Track Video" icon="play" href="/api-reference/videos/track-video">
+    Start tracking new videos
+  </Card>
+  <Card title="Stop Tracking" icon="stop" href="/api-reference/videos/stop-video">
+    End tracking early
+  </Card>
+  <Card title="List Videos" icon="list" href="/api-reference/videos/list-videos">
+    View all tracked videos
+  </Card>
+  <Card title="Platform Guides" icon="book" href="/guides/tiktok/track-tiktok-videos">
+    Platform-specific tutorials
+  </Card>
+</CardGroup>

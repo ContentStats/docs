@@ -1,0 +1,417 @@
+---
+title: "Get Usage"
+api: "GET /api/v1/usage"
+description: "Get your account balance, usage statistics, and billing information."
+---
+
+## Endpoint
+
+```http
+GET https://contentstats.io/api/v1/usage
+```
+
+Retrieve your organization's current balance, snapshot usage, and billing statistics.
+
+## Authentication
+
+<ParamField header="X-API-Key" type="string" required>
+  Your API key from the [dashboard](https://contentstats.io/dashboard/api-keys)
+</ParamField>
+
+## Response
+
+<ResponseField name="balance_usd" type="number">
+  Current account balance in USD
+</ResponseField>
+
+<ResponseField name="total_snapshots" type="integer">
+  Total snapshots collected (all time)
+</ResponseField>
+
+<ResponseField name="active_videos" type="integer">
+  Number of videos currently being monitored
+</ResponseField>
+
+<ResponseField name="uncharged_usage_usd" type="number">
+  Pending charges not yet deducted from balance
+</ResponseField>
+
+<ResponseField name="total_charged_usd" type="number">
+  Total amount charged (all time)
+</ResponseField>
+
+<ResponseField name="estimated_snapshots_remaining" type="integer">
+  Estimated snapshots you can collect with current balance
+</ResponseField>
+
+<ResponseField name="cost_per_snapshot" type="number">
+  Current cost per snapshot ($0.015)
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+```bash cURL
+curl "https://contentstats.io/api/v1/usage" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch('https://contentstats.io/api/v1/usage', {
+  headers: {
+    'X-API-Key': process.env.CONTENTSTATS_API_KEY
+  }
+});
+
+const usage = await response.json();
+
+console.log(`Balance: $${usage.balance_usd}`);
+console.log(`Active videos: ${usage.active_videos}`);
+console.log(`Snapshots remaining: ~${usage.estimated_snapshots_remaining}`);
+```
+
+```python Python
+import requests
+import os
+
+response = requests.get(
+    'https://contentstats.io/api/v1/usage',
+    headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+)
+
+usage = response.json()
+
+print(f"Balance: ${usage['balance_usd']:.2f}")
+print(f"Total snapshots: {usage['total_snapshots']}")
+print(f"Active videos: {usage['active_videos']}")
+```
+
+```php PHP
+<?php
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+    CURLOPT_URL => 'https://contentstats.io/api/v1/usage',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+    ]
+]);
+
+$response = curl_exec($curl);
+$usage = json_decode($response, true);
+
+echo "Balance: $" . number_format($usage['balance_usd'], 2) . "\n";
+echo "Active videos: " . $usage['active_videos'] . "\n";
+?>
+```
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "balance_usd": 12.45,
+  "total_snapshots": 450,
+  "active_videos": 3,
+  "uncharged_usage_usd": 0.75,
+  "total_charged_usd": 6.75,
+  "estimated_snapshots_remaining": 830,
+  "cost_per_snapshot": 0.015
+}
+```
+
+## Use Cases
+
+### Check Balance Before Tracking
+
+```javascript
+async function canAffordTracking(durationDays) {
+  const usage = await fetch('https://contentstats.io/api/v1/usage', {
+    headers: { 'X-API-Key': apiKey }
+  }).then(r => r.json());
+  
+  const estimatedCost = durationDays * 24 * 0.015;
+  const available = usage.balance_usd - usage.uncharged_usage_usd;
+  
+  if (available < estimatedCost) {
+    throw new Error(
+      `Insufficient balance. Need $${estimatedCost.toFixed(2)}, ` +
+      `have $${available.toFixed(2)}`
+    );
+  }
+  
+  return true;
+}
+
+// Check before tracking
+await canAffordTracking(7); // 7 days
+await trackVideo(url, 7);
+```
+
+### Display Usage Dashboard
+
+```javascript
+async function getUsageDashboard() {
+  const usage = await fetch('https://contentstats.io/api/v1/usage', {
+    headers: { 'X-API-Key': apiKey }
+  }).then(r => r.json());
+  
+  return {
+    balance: `$${usage.balance_usd.toFixed(2)}`,
+    pending: `$${usage.uncharged_usage_usd.toFixed(2)}`,
+    available: `$${(usage.balance_usd - usage.uncharged_usage_usd).toFixed(2)}`,
+    activeVideos: usage.active_videos,
+    totalSnapshots: usage.total_snapshots,
+    avgCostPerSnapshot: `$${usage.cost_per_snapshot}`,
+    estimatedDaysLeft: Math.floor(
+      usage.estimated_snapshots_remaining / (usage.active_videos * 24)
+    )
+  };
+}
+
+const dashboard = await getUsageDashboard();
+console.log(dashboard);
+// {
+//   balance: "$12.45",
+//   pending: "$0.75",
+//   available: "$11.70",
+//   activeVideos: 3,
+//   totalSnapshots: 450,
+//   avgCostPerSnapshot: "$0.015",
+//   estimatedDaysLeft: 11
+// }
+```
+
+### Low Balance Alert
+
+```javascript
+async function checkLowBalance(threshold = 5.0) {
+  const usage = await fetch('https://contentstats.io/api/v1/usage', {
+    headers: { 'X-API-Key': apiKey }
+  }).then(r => r.json());
+  
+  if (usage.balance_usd < threshold) {
+    await sendAlert({
+      type: 'low_balance',
+      balance: usage.balance_usd,
+      threshold: threshold,
+      message: `Balance is $${usage.balance_usd}. Please add credits.`
+    });
+    
+    return true;
+  }
+  
+  return false;
+}
+
+// Check every hour
+setInterval(() => checkLowBalance(5.0), 60 * 60 * 1000);
+```
+
+### Calculate Burn Rate
+
+```python
+def calculate_burn_rate(usage):
+    """Calculate daily spending rate"""
+    active_videos = usage['active_videos']
+    cost_per_snapshot = usage['cost_per_snapshot']
+    
+    # Snapshots per day = active videos × 24 hours
+    snapshots_per_day = active_videos * 24
+    daily_cost = snapshots_per_day * cost_per_snapshot
+    
+    # Days until balance depletes
+    days_remaining = usage['balance_usd'] / daily_cost if daily_cost > 0 else float('inf')
+    
+    return {
+        'daily_cost': round(daily_cost, 2),
+        'snapshots_per_day': snapshots_per_day,
+        'days_remaining': round(days_remaining, 1)
+    }
+
+usage = get_usage()
+burn_rate = calculate_burn_rate(usage)
+
+print(f"Daily cost: ${burn_rate['daily_cost']}")
+print(f"Days until depleted: {burn_rate['days_remaining']}")
+```
+
+### Budget Monitoring
+
+```javascript
+async function monitorBudget(monthlyBudget) {
+  const usage = await fetch('https://contentstats.io/api/v1/usage', {
+    headers: { 'X-API-Key': apiKey }
+  }).then(r => r.json());
+  
+  const currentMonth = new Date().getMonth();
+  const daysInMonth = new Date(
+    new Date().getFullYear(), 
+    currentMonth + 1, 
+    0
+  ).getDate();
+  const dayOfMonth = new Date().getDate();
+  
+  const budgetUsed = usage.total_charged_usd; // Assume reset monthly
+  const budgetPercentage = (budgetUsed / monthlyBudget) * 100;
+  const projectedSpend = (budgetUsed / dayOfMonth) * daysInMonth;
+  
+  if (projectedSpend > monthlyBudget) {
+    console.warn(
+      `⚠️ Projected to exceed budget: ` +
+      `$${projectedSpend.toFixed(2)} > $${monthlyBudget}`
+    );
+  }
+  
+  return {
+    budget: monthlyBudget,
+    used: budgetUsed,
+    percentage: budgetPercentage.toFixed(1),
+    projected: projectedSpend.toFixed(2)
+  };
+}
+
+const budget = await monitorBudget(100); // $100/month
+console.log(`Budget used: ${budget.percentage}%`);
+```
+
+## Understanding the Fields
+
+<AccordionGroup>
+  <Accordion icon="wallet" title="balance_usd vs uncharged_usage_usd">
+    - **balance_usd**: Total credits in your account
+    - **uncharged_usage_usd**: Pending charges not yet deducted
+    - **Available balance** = balance_usd - uncharged_usage_usd
+    
+    ```javascript
+    const available = usage.balance_usd - usage.uncharged_usage_usd;
+    console.log(`Available: $${available.toFixed(2)}`);
+    ```
+  </Accordion>
+  
+  <Accordion icon="calculator" title="estimated_snapshots_remaining">
+    Based on current balance and cost per snapshot:
+    
+    ```
+    estimated_snapshots_remaining = floor(balance_usd / cost_per_snapshot)
+    ```
+    
+    Example:
+    ```
+    $12.45 / $0.015 = 830 snapshots
+    ```
+    
+    With 3 active videos (72 snapshots/day):
+    ```
+    830 / 72 = ~11.5 days of tracking
+    ```
+  </Accordion>
+  
+  <Accordion icon="chart-line" title="total_charged_usd">
+    Total amount charged since account creation. Useful for:
+    - Monthly reporting
+    - Budget tracking
+    - Cost analysis
+    
+    **Note:** This doesn't reset monthly (cumulative total)
+  </Accordion>
+</AccordionGroup>
+
+## Error Responses
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "API key required"
+}
+```
+
+Missing or invalid API key.
+
+## Webhook Notifications (Coming Soon)
+
+Subscribe to balance events:
+
+```json
+{
+  "event": "balance.low",
+  "threshold": 5.0,
+  "url": "https://yourapp.com/webhooks/balance"
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="rotate" title="Cache Usage Data">
+    Don't call on every request:
+    
+    ```javascript
+    let usageCache = null;
+    let cacheTime = null;
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    
+    async function getCachedUsage() {
+      if (usageCache && Date.now() - cacheTime < CACHE_TTL) {
+        return usageCache;
+      }
+      
+      usageCache = await fetch('/api/v1/usage').then(r => r.json());
+      cacheTime = Date.now();
+      
+      return usageCache;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="bell" title="Set Up Auto Top-Up">
+    Configure auto top-up in [dashboard](https://contentstats.io/dashboard/billing):
+    
+    1. Set balance threshold (e.g., $10)
+    2. Set top-up amount (e.g., $50)
+    3. We charge automatically when below threshold
+    
+    Prevents tracking interruptions!
+  </Accordion>
+  
+  <Accordion icon="chart-bar" title="Monitor Regularly">
+    Check usage in scheduled jobs:
+    
+    ```javascript
+    // Daily at 9 AM
+    cron.schedule('0 9 * * *', async () => {
+      const usage = await getUsage();
+      
+      await logUsage({
+        date: new Date(),
+        balance: usage.balance_usd,
+        snapshots: usage.total_snapshots,
+        activeVideos: usage.active_videos
+      });
+      
+      if (usage.balance_usd < 10) {
+        await notifyLowBalance(usage);
+      }
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Add Credits" icon="credit-card" href="https://contentstats.io/dashboard/billing">
+    Top up your balance
+  </Card>
+  <Card title="Track Video" icon="play" href="/api-reference/videos/track-video">
+    Start tracking videos
+  </Card>
+  <Card title="List Videos" icon="list" href="/api-reference/videos/list-videos">
+    View your active videos
+  </Card>
+  <Card title="Pricing" icon="dollar-sign" href="/pricing">
+    Understand costs
+  </Card>
+</CardGroup>

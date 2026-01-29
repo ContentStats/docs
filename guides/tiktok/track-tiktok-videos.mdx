@@ -1,0 +1,434 @@
+---
+title: "How to Track TikTok Videos"
+seoTitle: "How to Track TikTok Videos with API | Step-by-Step Guide 2026"
+description: "Learn how to track TikTok video performance with our API. Get hourly snapshots of views, likes, comments, shares, and bot detection. No TikTok API approval needed."
+---
+
+## Track TikTok Videos Programmatically
+
+This guide shows you how to track TikTok video performance using the ContentStats.io API. Get hourly snapshots of views, likes, comments, shares, and saves with built-in bot detection.
+
+<Note>
+  **No TikTok API approval required.** Start tracking in minutes with just an API key.
+</Note>
+
+## Prerequisites
+
+Before you start, you'll need:
+
+- ContentStats.io account ([sign up free](https://contentstats.io/auth/signup))
+- API key from your [dashboard](https://contentstats.io/dashboard/api-keys)
+- At least $0.015 in your balance (you get $5 free)
+- URL of a **public** TikTok video
+
+## Step 1: Get Your API Key
+
+<Steps>
+  <Step title="Access Dashboard">
+    Log in to [contentstats.io](https://contentstats.io/dashboard)
+  </Step>
+  
+  <Step title="Navigate to API Keys">
+    Go to **Settings → API Keys**
+  </Step>
+  
+  <Step title="Create New Key">
+    Click **"Create New Key"** and copy it
+  </Step>
+</Steps>
+
+<Warning>
+  API keys are shown only once. Store it securely in environment variables.
+</Warning>
+
+## Step 2: Start Tracking a TikTok Video
+
+Send a POST request to `/api/v1/videos/track`:
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST https://contentstats.io/api/v1/videos/track \
+    -H "Content-Type: application/json" \
+    -H "X-API-Key: cs_live_YOUR_KEY" \
+    -d '{
+      "video_link": "https://www.tiktok.com/@charlidamelio/video/7234567890",
+      "duration_days": 7
+    }'
+  ```
+
+  ```javascript Node.js
+  const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    },
+    body: JSON.stringify({
+      video_link: 'https://www.tiktok.com/@charlidamelio/video/7234567890',
+      duration_days: 7
+    })
+  });
+
+  const data = await response.json();
+  console.log('Tracking started:', data.id);
+  ```
+
+  ```python Python
+  import requests
+  import os
+
+  response = requests.post(
+      'https://contentstats.io/api/v1/videos/track',
+      headers={
+          'Content-Type': 'application/json',
+          'X-API-Key': os.environ['CONTENTSTATS_API_KEY']
+      },
+      json={
+          'video_link': 'https://www.tiktok.com/@charlidamelio/video/7234567890',
+          'duration_days': 7
+      }
+  )
+
+  data = response.json()
+  print(f"Tracking started: {data['id']}")
+  ```
+
+  ```php PHP
+  <?php
+  $curl = curl_init();
+
+  curl_setopt_array($curl, [
+      CURLOPT_URL => 'https://contentstats.io/api/v1/videos/track',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_POST => true,
+      CURLOPT_HTTPHEADER => [
+          'Content-Type: application/json',
+          'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+      ],
+      CURLOPT_POSTFIELDS => json_encode([
+          'video_link' => 'https://www.tiktok.com/@charlidamelio/video/7234567890',
+          'duration_days' => 7
+      ])
+  ]);
+
+  $response = curl_exec($curl);
+  $data = json_decode($response, true);
+  echo "Tracking started: " . $data['id'];
+  ?>
+  ```
+</CodeGroup>
+
+### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `video_link` | string | ✅ | Full TikTok video URL |
+| `duration_days` | integer | ✅ | Days to track (1-30) |
+
+### Response
+
+```json
+{
+  "id": "cm5abc123def",
+  "job_id": "job_xyz789",
+  "video_link": "https://www.tiktok.com/@charlidamelio/video/7234567890",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "monitoring_duration_days": 7,
+  "days_remaining": 7,
+  "estimated_cost": 2.52,
+  "created_at": "2024-01-29T10:00:00.000Z"
+}
+```
+
+<Info>
+  Save the `id` field — you'll need it to retrieve snapshots later.
+</Info>
+
+## Step 3: Get Snapshots and Bot Analysis
+
+After the first hour, retrieve snapshot data:
+
+<CodeGroup>
+  ```bash cURL
+  curl https://contentstats.io/api/v1/videos/cm5abc123def \
+    -H "X-API-Key: cs_live_YOUR_KEY"
+  ```
+
+  ```javascript Node.js
+  const response = await fetch(
+    'https://contentstats.io/api/v1/videos/cm5abc123def',
+    {
+      headers: {
+        'X-API-Key': process.env.CONTENTSTATS_API_KEY
+      }
+    }
+  );
+
+  const video = await response.json();
+  console.log('Total snapshots:', video.snapshots.length);
+  console.log('Bot confidence:', video.bot_confidence);
+  ```
+
+  ```python Python
+  response = requests.get(
+      'https://contentstats.io/api/v1/videos/cm5abc123def',
+      headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+  )
+
+  video = response.json()
+  print(f"Total snapshots: {len(video['snapshots'])}")
+  print(f"Bot confidence: {video['bot_confidence']}")
+  ```
+</CodeGroup>
+
+### Response with Snapshots
+
+```json
+{
+  "id": "cm5abc123def",
+  "video_link": "https://www.tiktok.com/@charlidamelio/video/7234567890",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "bot_confidence": 0.15,
+  "snapshots": [
+    {
+      "id": "snap_001",
+      "snapshot_time": "2024-01-29T10:00:00.000Z",
+      "views": "1250000",
+      "likes": "185000",
+      "comments": "4200",
+      "shares": "12500",
+      "saves": "8900"
+    },
+    {
+      "id": "snap_002",
+      "snapshot_time": "2024-01-29T11:00:00.000Z",
+      "views": "1298000",
+      "likes": "189000",
+      "comments": "4350",
+      "shares": "12800",
+      "saves": "9100"
+    }
+  ],
+  "bot_analysis": {
+    "overall_confidence": 0.15,
+    "engagement_velocity_score": 0.12,
+    "comment_quality_score": 0.18,
+    "timing_pattern_score": 0.14,
+    "ratio_analysis_score": 0.16,
+    "channel_context_score": 0.11
+  }
+}
+```
+
+## Understanding Bot Analysis
+
+Each video gets AI-powered bot detection:
+
+| Score | Meaning | Action |
+|-------|---------|--------|
+| **0.0 - 0.3** | Authentic | ✅ Engagement looks real |
+| **0.3 - 0.5** | Suspicious | ⚠️ Some red flags detected |
+| **0.5 - 0.7** | Likely Botted | 🚨 High probability of fake engagement |
+| **0.7 - 1.0** | Definitely Botted | ❌ Clear bot activity |
+
+<Accordion title="What each score measures">
+  - **Engagement Velocity**: Speed of likes/comments (sudden spikes = bots)
+  - **Comment Quality**: Generic/spammy comments indicate bots
+  - **Timing Patterns**: 24/7 engagement without dips = suspicious
+  - **Ratio Analysis**: Unusual views:likes:comments ratios
+  - **Channel Context**: Account age, follower count, history
+</Accordion>
+
+## Step 4: List All Tracked TikTok Videos
+
+Get all your tracked videos:
+
+```bash
+curl "https://contentstats.io/api/v1/videos?platform=tiktok&status=monitoring" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+### Query Parameters
+
+| Parameter | Values | Description |
+|-----------|--------|-------------|
+| `platform` | `tiktok`, `youtube`, `instagram`, `twitter` | Filter by platform |
+| `status` | `monitoring`, `completed`, `paused`, `error` | Filter by status |
+| `limit` | 1-100 | Number of results (default: 50) |
+
+## Step 5: Stop Tracking Early (Optional)
+
+To stop tracking before the duration ends:
+
+```bash
+curl -X POST https://contentstats.io/api/v1/videos/cm5abc123def/stop \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+<Info>
+  You'll only pay for snapshots already collected. Future snapshots won't be charged.
+</Info>
+
+## Supported TikTok URL Formats
+
+We accept all TikTok video URL formats:
+
+```
+✅ https://www.tiktok.com/@username/video/1234567890
+✅ https://vm.tiktok.com/abc123/
+✅ https://www.tiktok.com/t/abc123/
+✅ https://m.tiktok.com/v/1234567890.html
+```
+
+<Warning>
+  Only **public videos** can be tracked. Private or age-restricted videos will return an error.
+</Warning>
+
+## Cost Breakdown
+
+Tracking cost calculation:
+
+```
+Hourly snapshots = Duration (days) × 24
+Cost per video = Hourly snapshots × $0.015
+
+Example for 7 days:
+7 days × 24 hours = 168 snapshots
+168 × $0.015 = $2.52
+```
+
+## Advanced: Batch Tracking
+
+Track multiple TikTok videos at once:
+
+```javascript
+const videos = [
+  'https://www.tiktok.com/@user1/video/123',
+  'https://www.tiktok.com/@user2/video/456',
+  'https://www.tiktok.com/@user3/video/789'
+];
+
+const results = await Promise.all(
+  videos.map(video_link =>
+    fetch('https://contentstats.io/api/v1/videos/track', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': process.env.CONTENTSTATS_API_KEY
+      },
+      body: JSON.stringify({ video_link, duration_days: 7 })
+    }).then(r => r.json())
+  )
+);
+
+console.log(`Started tracking ${results.length} videos`);
+```
+
+## Webhook Notifications (Coming Soon)
+
+Get notified when:
+- First snapshot is collected
+- Tracking completes
+- Bot score changes significantly
+- Video gets deleted
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Error: Video not found">
+    **Cause**: Invalid URL or video is private/deleted
+    
+    **Fix**: Verify the URL is public and accessible without login
+  </Accordion>
+  
+  <Accordion title="Error: Insufficient balance">
+    **Cause**: Not enough credit for estimated cost
+    
+    **Fix**: [Add credits](https://contentstats.io/dashboard/billing) to your account
+  </Accordion>
+  
+  <Accordion title="No snapshots appearing">
+    **Cause**: First snapshot takes up to 1 hour
+    
+    **Fix**: Wait 60 minutes and check again
+  </Accordion>
+  
+  <Accordion title="Duplicate tracking">
+    **Cause**: Same video tracked multiple times
+    
+    **Fix**: List videos first to check if already tracking:
+    ```bash
+    curl "https://contentstats.io/api/v1/videos?platform=tiktok" \
+      -H "X-API-Key: YOUR_KEY"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="shield-check" title="Use Environment Variables">
+    Never hardcode API keys:
+    
+    ```bash
+    # .env
+    CONTENTSTATS_API_KEY=cs_live_YOUR_KEY
+    ```
+  </Accordion>
+  
+  <Accordion icon="clock" title="Check Balance Before Tracking">
+    Verify sufficient balance:
+    
+    ```bash
+    curl https://contentstats.io/api/v1/usage \
+      -H "X-API-Key: YOUR_KEY"
+    ```
+  </Accordion>
+  
+  <Accordion icon="list" title="Track High-Value Videos Only">
+    Focus on videos that matter:
+    - Sponsored content
+    - Competitor analysis
+    - Viral trend research
+    - Campaign performance
+  </Accordion>
+  
+  <Accordion icon="rotate" title="Stop Tracking When Done">
+    If you get the data you need early, stop tracking to save credits
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="TikTok API Alternative"
+    icon="arrows-rotate"
+    href="/guides/tiktok/tiktok-api-alternative"
+  >
+    Compare with official TikTok API
+  </Card>
+  <Card
+    title="Developer Guide"
+    icon="code"
+    href="/guides/tiktok/tiktok-analytics-developers"
+  >
+    Advanced integration examples
+  </Card>
+  <Card
+    title="Bot Detection Guide"
+    icon="shield"
+    href="/guides/general/bot-detection"
+  >
+    Deep dive into bot analysis
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/videos/track-video"
+  >
+    Complete API documentation
+  </Card>
+</CardGroup>

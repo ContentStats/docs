@@ -1,0 +1,195 @@
+---
+title: "Rate Limits"
+seoTitle: "API Rate Limits | ContentStats.io"
+description: "Understand ContentStats.io API rate limits, quotas, and best practices for handling rate limiting."
+---
+
+## Rate Limit Overview
+
+ContentStats.io implements rate limiting to ensure fair API usage and system stability.
+
+## Current Limits
+
+| Plan | Requests per Minute | Concurrent Videos |
+|------|-------------------|-------------------|
+| **Free** | 60 | 10 |
+| **Pro** | 300 | 100 |
+| **Enterprise** | Custom | Unlimited |
+
+## Rate Limit Headers
+
+Every API response includes rate limit headers:
+
+```http
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 45
+X-RateLimit-Reset: 1640995200
+```
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Maximum requests allowed per window |
+| `X-RateLimit-Remaining` | Requests remaining in current window |
+| `X-RateLimit-Reset` | Unix timestamp when limit resets |
+
+## Checking Rate Limits
+
+```javascript
+const response = await fetch('https://contentstats.io/api/v1/videos', {
+  headers: { 'X-API-Key': apiKey }
+});
+
+console.log('Limit:', response.headers.get('X-RateLimit-Limit'));
+console.log('Remaining:', response.headers.get('X-RateLimit-Remaining'));
+console.log('Resets at:', new Date(response.headers.get('X-RateLimit-Reset') * 1000));
+```
+
+## Handling Rate Limits
+
+### Exponential Backoff
+
+```javascript
+async function fetchWithBackoff(url, options, maxRetries = 5) {
+  for (let i = 0; i < maxRetries; i++) {
+    const response = await fetch(url, options);
+    
+    if (response.status !== 429) {
+      return response;
+    }
+    
+    const resetTime = parseInt(response.headers.get('X-RateLimit-Reset'));
+    const waitMs = Math.max(0, (resetTime * 1000) - Date.now());
+    
+    console.log(`Rate limited. Waiting ${waitMs}ms`);
+    await new Promise(resolve => setTimeout(resolve, waitMs));
+  }
+  
+  throw new Error('Max retries exceeded');
+}
+```
+
+### Request Queuing
+
+```javascript
+class RateLimiter {
+  constructor(requestsPerMinute) {
+    this.limit = requestsPerMinute;
+    this.queue = [];
+    this.processing = false;
+  }
+  
+  async request(fn) {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ fn, resolve, reject });
+      this.process();
+    });
+  }
+  
+  async process() {
+    if (this.processing || this.queue.length === 0) return;
+    
+    this.processing = true;
+    const { fn, resolve, reject } = this.queue.shift();
+    
+    try {
+      const result = await fn();
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    }
+    
+    this.processing = false;
+    
+    const delay = 60000 / this.limit; // ms between requests
+    setTimeout(() => this.process(), delay);
+  }
+}
+
+// Usage
+const limiter = new RateLimiter(60);
+
+for (const video of videos) {
+  await limiter.request(() => trackVideo(video.url));
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Batch Requests">
+    Group operations to reduce API calls:
+    
+    ```javascript
+    // ❌ Bad: 100 individual requests
+    for (const video of videos) {
+      await getVideo(video.id);
+    }
+    
+    // ✅ Better: Use list endpoint
+    const videos = await fetch('https://contentstats.io/api/v1/videos?limit=100');
+    ```
+  </Accordion>
+  
+  <Accordion icon="database" title="Cache Responses">
+    Cache data to avoid redundant requests:
+    
+    ```javascript
+    const cache = new Map();
+    const TTL = 60 * 60 * 1000; // 1 hour
+    
+    async function getCachedVideo(id) {
+      const cached = cache.get(id);
+      
+      if (cached && Date.now() - cached.timestamp < TTL) {
+        return cached.data;
+      }
+      
+      const data = await fetchVideo(id);
+      cache.set(id, { data, timestamp: Date.now() });
+      
+      return data;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="gauge-high" title="Monitor Usage">
+    Track rate limit usage:
+    
+    ```javascript
+    let requestCount = 0;
+    
+    async function monitoredFetch(url, options) {
+      const response = await fetch(url, options);
+      
+      requestCount++;
+      const remaining = parseInt(response.headers.get('X-RateLimit-Remaining'));
+      
+      if (remaining < 10) {
+        console.warn(`Low rate limit: ${remaining} requests remaining`);
+      }
+      
+      return response;
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Increasing Limits
+
+Need higher limits? [Contact sales](mailto:sales@contentstats.io) for Enterprise plans with:
+
+- Custom rate limits
+- Dedicated infrastructure
+- Priority support
+- SLA guarantees
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Error Handling" href="/api-reference/errors">
+    Handle API errors
+  </Card>
+  <Card title="API Reference" href="/api-reference/introduction">
+    Complete documentation
+  </Card>
+</CardGroup>

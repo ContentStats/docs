@@ -1,0 +1,440 @@
+---
+title: "Hourly Social Media Tracking"
+seoTitle: "Hourly Social Media Tracking | Real-Time Video Analytics"
+description: "Track social media performance hourly instead of daily. Catch viral moments early, detect bot activity faster, and get granular growth data."
+---
+
+## Why Track Hourly Instead of Daily?
+
+Most analytics tools update daily. ContentStats.io provides **hourly snapshots**, giving you 24× more data points and critical advantages.
+
+## Benefits of Hourly Tracking
+
+<CardGroup cols={2}>
+  <Card title="Catch Viral Moments" icon="fire">
+    Detect when content goes viral within hours, not days
+  </Card>
+  <Card title="Faster Bot Detection" icon="shield-check">
+    Identify fake engagement patterns before they distort your data
+  </Card>
+  <Card title="Granular Growth Data" icon="chart-line">
+    See exactly when and how your content gains traction
+  </Card>
+  <Card title="Optimize Posting Times" icon="clock">
+    Discover the exact hours when your audience is most active
+  </Card>
+</CardGroup>
+
+## Daily vs Hourly Tracking Comparison
+
+| Metric | Daily Tracking | Hourly Tracking |
+|--------|---------------|-----------------|
+| **Data Points** | 7 per week | 168 per week |
+| **Viral Detection** | 24+ hours delay | Real-time |
+| **Bot Detection** | Pattern unclear | Pattern obvious |
+| **Cost Optimization** | Can't stop early | Stop when needed |
+| **Algorithm Insights** | Limited | Detailed |
+
+## Real-World Examples
+
+### Example 1: Catching Viral Moments
+
+**Daily Tracking:**
+```
+Day 1: 10,000 views
+Day 2: 500,000 views ← Went viral sometime yesterday
+Day 3: 750,000 views
+```
+**Result**: You don't know when it went viral or why.
+
+**Hourly Tracking:**
+```
+Hour 1: 10,000 views
+Hour 2: 12,000 views
+Hour 3: 15,000 views
+...
+Hour 16: 45,000 views
+Hour 17: 250,000 views ← Viral moment detected!
+Hour 18: 400,000 views
+```
+**Result**: You know it went viral at 5 PM. Check what happened at that exact time!
+
+### Example 2: Bot Detection
+
+**Daily Tracking:**
+```javascript
+// Hard to detect patterns
+const dailyGrowth = [
+  { day: 1, likes: 10000 },
+  { day: 2, likes: 25000 }, // Could be organic or bots?
+  { day: 3, likes: 35000 }
+];
+```
+
+**Hourly Tracking:**
+```javascript
+// Clear bot pattern emerges
+const hourlyGrowth = [
+  { hour: 1, likes: 10000 },
+  { hour: 2, likes: 10050 },  // Normal
+  { hour: 3, likes: 10100 },  // Normal
+  { hour: 4, likes: 15000 },  // Sudden spike!
+  { hour: 5, likes: 20000 },  // Sustained spike
+  { hour: 6, likes: 25000 },  // Likely bot farm
+  { hour: 7, likes: 25100 }   // Back to normal
+];
+
+// Bot pattern detected: 3-hour spike from 4-6 AM
+```
+
+## Use Cases Perfect for Hourly Tracking
+
+### 1. Product Launches
+
+Track minute-by-minute performance:
+
+```javascript
+async function trackProductLaunch(launchVideos) {
+  // Start tracking all launch videos
+  const tracked = await Promise.all(
+    launchVideos.map(url => trackVideo(url, 7))
+  );
+  
+  // Check every hour for viral potential
+  const checkInterval = setInterval(async () => {
+    for (const video of tracked) {
+      const data = await getVideo(video.id);
+      const latest = data.snapshots[data.snapshots.length - 1];
+      const hourAgo = data.snapshots[data.snapshots.length - 2];
+      
+      const hourlyGrowth = parseInt(latest.views) - parseInt(hourAgo.views);
+      
+      if (hourlyGrowth > 10000) { // Viral threshold
+        console.log('🔥 VIRAL ALERT:', data.video_link);
+        console.log('Hourly growth:', hourlyGrowth, 'views');
+        
+        // Boost paid promotion
+        await boostPromotion(data.video_link);
+      }
+    }
+  }, 60 * 60 * 1000); // Check hourly
+}
+```
+
+### 2. Influencer Campaign Monitoring
+
+Verify influencers deliver results in real-time:
+
+```javascript
+async function monitorInfluencerPost(videoId, expectedHourlyViews) {
+  const video = await getVideo(videoId);
+  const snapshots = video.snapshots;
+  
+  if (snapshots.length < 2) return;
+  
+  const latest = snapshots[snapshots.length - 1];
+  const hourAgo = snapshots[snapshots.length - 2];
+  
+  const actualGrowth = parseInt(latest.views) - parseInt(hourAgo.views);
+  
+  if (actualGrowth < expectedHourlyViews * 0.5) {
+    // Underperforming - alert immediately
+    await sendAlert({
+      type: 'underperforming',
+      influencer: video.current_metadata.creator,
+      expected: expectedHourlyViews,
+      actual: actualGrowth,
+      hoursPassed: snapshots.length
+    });
+  }
+}
+```
+
+### 3. Algorithm Testing
+
+Test how platform algorithms respond to your content:
+
+```javascript
+function analyzeAlgorithmBoost(snapshots) {
+  const boostPatterns = [];
+  
+  for (let i = 1; i < snapshots.length; i++) {
+    const current = parseInt(snapshots[i].views);
+    const previous = parseInt(snapshots[i - 1].views);
+    const growth = current - previous;
+    
+    // Calculate average growth excluding current hour
+    const avgGrowth = snapshots
+      .slice(0, i)
+      .reduce((sum, s, idx, arr) => {
+        if (idx === 0) return sum;
+        return sum + (parseInt(arr[idx].views) - parseInt(arr[idx - 1].views));
+      }, 0) / (i - 1);
+    
+    // Detect algorithm boost (2x average growth)
+    if (growth > avgGrowth * 2) {
+      boostPatterns.push({
+        hour: i,
+        time: snapshots[i].snapshot_time,
+        growth: growth,
+        multiplier: (growth / avgGrowth).toFixed(1) + 'x'
+      });
+    }
+  }
+  
+  return boostPatterns;
+}
+
+// Example output:
+// [
+//   { hour: 12, time: '2024-01-29T12:00:00Z', growth: 15000, multiplier: '2.5x' },
+//   { hour: 18, time: '2024-01-29T18:00:00Z', growth: 12000, multiplier: '2.0x' }
+// ]
+// Insight: Algorithm boost at 12 PM and 6 PM
+```
+
+### 4. Competitive Response
+
+React to competitor activity immediately:
+
+```javascript
+async function monitorCompetitorLaunch(competitorVideos) {
+  const trackedCompetitors = await Promise.all(
+    competitorVideos.map(url => trackVideo(url, 3))
+  );
+  
+  // Check every hour
+  setInterval(async () => {
+    for (const comp of trackedCompetitors) {
+      const data = await getVideo(comp.id);
+      
+      if (data.snapshots.length >= 2) {
+        const latest = data.snapshots[data.snapshots.length - 1];
+        const previous = data.snapshots[data.snapshots.length - 2];
+        
+        const growth = parseInt(latest.views) - parseInt(previous.views);
+        
+        if (growth > 50000) { // High performing
+          // Competitor content performing well - analyze and respond
+          await analyzeCompetitorStrategy(data);
+          await createResponseContent(data.current_metadata);
+        }
+      }
+    }
+  }, 60 * 60 * 1000);
+}
+```
+
+## Insights Only Possible with Hourly Data
+
+### 1. Peak Engagement Hours
+
+```javascript
+function findPeakHours(snapshots) {
+  const hourlyEngagement = snapshots.map((snapshot, i) => {
+    if (i === 0) return null;
+    
+    const previous = snapshots[i - 1];
+    const hour = new Date(snapshot.snapshot_time).getHours();
+    
+    return {
+      hour: hour,
+      engagementGrowth: (
+        (parseInt(snapshot.likes) - parseInt(previous.likes)) +
+        (parseInt(snapshot.comments) - parseInt(previous.comments))
+      )
+    };
+  }).filter(Boolean);
+  
+  // Group by hour of day
+  const hourlyAvg = {};
+  hourlyEngagement.forEach(entry => {
+    if (!hourlyAvg[entry.hour]) {
+      hourlyAvg[entry.hour] = [];
+    }
+    hourlyAvg[entry.hour].push(entry.engagementGrowth);
+  });
+  
+  // Calculate averages
+  const avgByHour = Object.keys(hourlyAvg).map(hour => ({
+    hour: parseInt(hour),
+    avgEngagement: hourlyAvg[hour].reduce((a, b) => a + b) / hourlyAvg[hour].length
+  })).sort((a, b) => b.avgEngagement - a.avgEngagement);
+  
+  return avgByHour.slice(0, 3); // Top 3 hours
+}
+
+// Example output:
+// [
+//   { hour: 18, avgEngagement: 1250 }, // 6 PM best
+//   { hour: 12, avgEngagement: 980 },  // 12 PM second
+//   { hour: 21, avgEngagement: 870 }   // 9 PM third
+// ]
+```
+
+### 2. Content Half-Life
+
+How long does content stay relevant?
+
+```javascript
+function calculateContentHalfLife(snapshots) {
+  const peakSnapshot = snapshots.reduce((max, s) => {
+    const maxGrowth = max.growth || 0;
+    const currentGrowth = parseInt(s.views);
+    return currentGrowth > maxGrowth ? { ...s, growth: currentGrowth } : max;
+  }, {});
+  
+  const peakIndex = snapshots.indexOf(peakSnapshot);
+  const peakViews = parseInt(peakSnapshot.views);
+  
+  // Find when views drop to 50% of peak growth rate
+  for (let i = peakIndex + 1; i < snapshots.length; i++) {
+    const current = snapshots[i];
+    const previous = snapshots[i - 1];
+    
+    const currentGrowth = parseInt(current.views) - parseInt(previous.views);
+    const peakGrowth = peakViews - (peakIndex > 0 ? parseInt(snapshots[peakIndex - 1].views) : 0);
+    
+    if (currentGrowth < peakGrowth * 0.5) {
+      return {
+        peakHour: peakIndex,
+        halfLifeHours: i - peakIndex,
+        message: `Content peaked at hour ${peakIndex}, half-life reached after ${i - peakIndex} hours`
+      };
+    }
+  }
+  
+  return { message: 'Content still growing' };
+}
+```
+
+### 3. Viral Velocity Score
+
+Measure how fast content goes viral:
+
+```javascript
+function calculateViralVelocity(snapshots) {
+  const velocities = [];
+  
+  for (let i = 1; i < Math.min(snapshots.length, 25); i++) { // First 24 hours
+    const current = parseInt(snapshots[i].views);
+    const initial = parseInt(snapshots[0].views);
+    
+    const totalGrowth = current - initial;
+    const velocityScore = totalGrowth / i; // Views per hour
+    
+    velocities.push(velocityScore);
+  }
+  
+  const avgVelocity = velocities.reduce((a, b) => a + b) / velocities.length;
+  
+  // Classify viral potential
+  let classification;
+  if (avgVelocity > 10000) classification = '🔥 VIRAL';
+  else if (avgVelocity > 5000) classification = '📈 HIGH POTENTIAL';
+  else if (avgVelocity > 1000) classification = '✅ GOOD';
+  else classification = '📊 NORMAL';
+  
+  return {
+    avgVelocity: Math.round(avgVelocity),
+    classification,
+    viewsPerHour: Math.round(avgVelocity)
+  };
+}
+```
+
+## Cost Efficiency
+
+Hourly tracking lets you stop early when you have enough data:
+
+```javascript
+async function trackUntilConfident(videoUrl, maxDays = 7) {
+  const tracking = await trackVideo(videoUrl, maxDays);
+  
+  // Check every hour
+  const checkInterval = setInterval(async () => {
+    const video = await getVideo(tracking.id);
+    
+    // Stop if we have 48 hours of data and clear pattern
+    if (video.snapshots.length >= 48) {
+      const velocity = calculateViralVelocity(video.snapshots);
+      
+      // Clear conclusion reached
+      if (velocity.classification === '🔥 VIRAL' || 
+          velocity.classification === '📊 NORMAL') {
+        
+        await stopVideo(tracking.id);
+        clearInterval(checkInterval);
+        
+        console.log('Stopped early - conclusion:', velocity.classification);
+        console.log('Saved:', maxDays - 2, 'days of tracking costs');
+      }
+    }
+  }, 60 * 60 * 1000);
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Poll Hourly, Not More">
+    Data updates hourly, so don't poll more frequently:
+    
+    ```javascript
+    // ✅ Good: Check hourly
+    setInterval(checkVideo, 60 * 60 * 1000);
+    
+    // ❌ Bad: Wastes API calls
+    setInterval(checkVideo, 5 * 60 * 1000);
+    ```
+  </Accordion>
+  
+  <Accordion icon="database" title="Store Historical Snapshots">
+    Build your own database of performance patterns:
+    
+    ```javascript
+    async function archiveSnapshots(videoId) {
+      const video = await getVideo(videoId);
+      
+      await db.snapshots.insertMany(
+        video.snapshots.map(s => ({
+          ...s,
+          videoId: video.id,
+          platform: video.platform,
+          archivedAt: new Date()
+        }))
+      );
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="chart-line" title="Visualize Hourly Trends">
+    Hourly data creates beautiful, insightful charts:
+    
+    ```javascript
+    // Perfect for Chart.js, Recharts, etc.
+    const chartData = snapshots.map(s => ({
+      time: new Date(s.snapshot_time).toLocaleTimeString(),
+      views: parseInt(s.views),
+      likes: parseInt(s.likes)
+    }));
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Analytics" href="/guides/general/real-time-analytics">
+    Build real-time dashboards
+  </Card>
+  <Card title="Automate Analytics" href="/guides/general/automate-analytics">
+    Set up automated tracking
+  </Card>
+  <Card title="Track Videos" href="/api-reference/videos/track-video">
+    Start tracking hourly
+  </Card>
+  <Card title="Quickstart" href="/quickstart">
+    Get started now
+  </Card>
+</CardGroup>

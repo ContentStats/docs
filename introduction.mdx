@@ -1,0 +1,209 @@
+---
+title: "Social Media Analytics API - Track TikTok, YouTube, Instagram & Twitter"
+seoTitle: "Social Media Analytics API | Track Video Performance Across Platforms"
+description: "Professional social media tracking API for TikTok, YouTube, Instagram, and Twitter. Get hourly snapshots, bot detection, and real-time analytics. No scraping required."
+---
+
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.png"
+  alt="ContentStats.io - Social Media Analytics API"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.png"
+  alt="ContentStats.io - Social Media Analytics API"
+/>
+
+## Track Social Media Performance Without Scraping
+
+ContentStats.io provides a **simple REST API** to track video performance across TikTok, YouTube, Instagram, and Twitter/X. Get hourly snapshots of views, likes, comments, and engagement with built-in bot detection.
+
+<CardGroup cols={2}>
+  <Card
+    title="TikTok Analytics API"
+    icon="tiktok"
+    href="/guides/tiktok/tiktok-analytics-api"
+  >
+    Track TikTok videos with hourly snapshots and bot detection
+  </Card>
+  <Card
+    title="YouTube Analytics Alternative"
+    icon="youtube"
+    href="/guides/youtube/youtube-analytics-alternative"
+  >
+    Get YouTube video stats without official API quotas
+  </Card>
+  <Card
+    title="Instagram Analytics API"
+    icon="instagram"
+    href="/guides/instagram/instagram-analytics-api"
+  >
+    Track Instagram post performance over time
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/introduction"
+  >
+    Complete API documentation with examples
+  </Card>
+</CardGroup>
+
+## Why ContentStats.io?
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Hourly Tracking">
+    Unlike official APIs with daily limits, get **hourly snapshots** of your video performance. Perfect for tracking viral content in real-time.
+  </Accordion>
+  
+  <Accordion icon="shield-check" title="No Scraping Required">
+    We handle all the complexity of platform APIs and data collection. You get clean, structured data through a simple REST API.
+  </Accordion>
+  
+  <Accordion icon="robot" title="Built-in Bot Detection">
+    Every video comes with **AI-powered bot analysis** scoring engagement quality, comment authenticity, and timing patterns.
+  </Accordion>
+  
+  <Accordion icon="dollar-sign" title="Pay Per Snapshot">
+    Only **$0.015 per snapshot**. No subscriptions, no monthly fees. Start with $5 free credit (~333 snapshots).
+  </Accordion>
+</AccordionGroup>
+
+## Supported Platforms
+
+Track videos across all major social media platforms:
+
+| Platform | Metrics | Update Frequency | Bot Detection |
+|----------|---------|------------------|---------------|
+| **TikTok** | Views, Likes, Comments, Shares, Saves | Hourly | ✅ |
+| **YouTube** | Views, Likes, Comments | Hourly | ✅ |
+| **Instagram** | Likes, Comments, Saves | Hourly | ✅ |
+| **Twitter/X** | Views, Likes, Retweets, Replies | Hourly | ✅ |
+
+## Quick Start
+
+Get started in 3 simple steps:
+
+<Steps>
+  <Step title="Create Account">
+    [Sign up](https://contentstats.io/auth/signup) and get $5 free credit
+  </Step>
+  <Step title="Generate API Key">
+    Create an API key from your [dashboard](https://contentstats.io/dashboard/api-keys)
+  </Step>
+  <Step title="Make Your First Request">
+    ```bash
+    curl -X POST https://contentstats.io/api/v1/videos/track \
+      -H "Content-Type: application/json" \
+      -H "X-API-Key: cs_live_YOUR_KEY" \
+      -d '{
+        "video_link": "https://www.tiktok.com/@user/video/123",
+        "duration_days": 7
+      }'
+    ```
+  </Step>
+</Steps>
+
+<Card
+  title="View Full Quickstart Guide"
+  icon="rocket"
+  href="/quickstart"
+>
+  Learn how to authenticate and make your first API call
+</Card>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card
+    title="Influencer Marketing"
+    icon="users"
+  >
+    Track campaign performance across all platforms in one place
+  </Card>
+  <Card
+    title="Competitive Analysis"
+    icon="chart-line"
+  >
+    Monitor competitor content and engagement patterns
+  </Card>
+  <Card
+    title="Content Research"
+    icon="magnifying-glass"
+  >
+    Analyze what content performs best in your niche
+  </Card>
+  <Card
+    title="Bot Detection"
+    icon="shield-halved"
+  >
+    Identify fake engagement and inflated metrics
+  </Card>
+</CardGroup>
+
+## What You'll Get
+
+Every tracked video includes:
+
+- **Hourly Snapshots**: Views, likes, comments, shares over time
+- **Bot Analysis**: AI-powered confidence scores for fake engagement
+- **Growth Patterns**: Velocity tracking and engagement rate analysis
+- **Historical Data**: Complete timeline from tracking start
+- **Platform Metadata**: Creator info, post date, and more
+
+## Popular Guides
+
+<CardGroup cols={2}>
+  <Card
+    title="How to Track TikTok Videos"
+    icon="book-open"
+    href="/guides/tiktok/track-tiktok-videos"
+  >
+    Step-by-step guide for TikTok video tracking
+  </Card>
+  <Card
+    title="Get YouTube Video Stats"
+    icon="book-open"
+    href="/guides/youtube/get-youtube-stats"
+  >
+    Alternative to YouTube Analytics API
+  </Card>
+  <Card
+    title="Automate Social Media Analytics"
+    icon="book-open"
+    href="/guides/general/automate-analytics"
+  >
+    Build automated tracking systems
+  </Card>
+  <Card
+    title="Real-Time Analytics"
+    icon="book-open"
+    href="/guides/general/real-time-analytics"
+  >
+    Set up real-time monitoring dashboards
+  </Card>
+</CardGroup>
+
+## Ready to Start?
+
+<CardGroup cols={2}>
+  <Card
+    title="API Documentation"
+    icon="terminal"
+    href="/api-reference/introduction"
+  >
+    Explore the complete API reference
+  </Card>
+  <Card
+    title="View Pricing"
+    icon="credit-card"
+    href="/pricing"
+  >
+    Simple pay-per-use pricing with no subscriptions
+  </Card>
+</CardGroup>
+
+<Note>
+  **Questions?** Check our [FAQ](/faq) or [contact support](/support) for help.
+</Note>

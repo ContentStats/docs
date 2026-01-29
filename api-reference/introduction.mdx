@@ -1,33 +1,319 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API Reference"
+seoTitle: "ContentStats.io API Reference | Social Media Tracking API"
+description: "Complete API reference for ContentStats.io. Track TikTok, YouTube, Instagram, and Twitter videos programmatically with RESTful API."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Welcome to ContentStats.io API
 
-## Welcome
+Track social media video performance across TikTok, YouTube, Instagram, and Twitter with our simple REST API.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Base URL
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```
+https://contentstats.io/api/v1
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API requests require authentication using an API key in the `X-API-Key` header:
+
+```bash
+curl https://contentstats.io/api/v1/videos \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+<Card title="Get Your API Key" icon="key" href="/authentication">
+  Learn how to create and manage API keys
+</Card>
+
+## Endpoints Overview
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/videos/track` | POST | Start tracking a video |
+| `/videos` | GET | List all tracked videos |
+| `/videos/{id}` | GET | Get video details with snapshots |
+| `/videos/{id}/stop` | POST | Stop tracking early |
+| `/usage` | GET | Get usage and billing stats |
+
+## Quick Example
+
+Track a TikTok video:
+
+```bash
+curl -X POST https://contentstats.io/api/v1/videos/track \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: cs_live_YOUR_KEY" \
+  -d '{
+    "video_link": "https://www.tiktok.com/@user/video/123",
+    "duration_days": 7
+  }'
+```
+
+Response:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "id": "cm5abc123",
+  "video_link": "https://www.tiktok.com/@user/video/123",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "estimated_cost": 2.52
+}
 ```
+
+## SDKs & Libraries
+
+<Tabs>
+  <Tab title="JavaScript/TypeScript">
+    ```bash
+    npm install @contentstats/sdk
+    ```
+    
+    ```javascript
+    import { ContentStats } from '@contentstats/sdk';
+    
+    const client = new ContentStats('cs_live_YOUR_KEY');
+    const video = await client.videos.track({
+      video_link: 'https://tiktok.com/@user/video/123',
+      duration_days: 7
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Python">
+    ```bash
+    pip install contentstats
+    ```
+    
+    ```python
+    from contentstats import ContentStats
+    
+    client = ContentStats('cs_live_YOUR_KEY')
+    video = client.videos.track(
+        video_link='https://tiktok.com/@user/video/123',
+        duration_days=7
+    )
+    ```
+  </Tab>
+  
+  <Tab title="PHP">
+    ```bash
+    composer require contentstats/sdk
+    ```
+    
+    ```php
+    <?php
+    use ContentStats\Client;
+    
+    $client = new Client('cs_live_YOUR_KEY');
+    $video = $client->videos->track([
+        'video_link' => 'https://tiktok.com/@user/video/123',
+        'duration_days' => 7
+    ]);
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  SDKs coming soon! For now, use the REST API directly.
+</Note>
+
+## Rate Limiting
+
+| Plan | Rate Limit |
+|------|-----------|
+| **Free** | 60 requests/minute |
+| **Pro** | 300 requests/minute |
+| **Enterprise** | Custom |
+
+Rate limit headers included in responses:
+
+```
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 59
+X-RateLimit-Reset: 1640995200
+```
+
+<Card title="Rate Limits Details" href="/api-reference/rate-limits">
+  Learn about rate limiting and best practices
+</Card>
+
+## Error Handling
+
+All errors return appropriate HTTP status codes with JSON responses:
+
+```json
+{
+  "error": "Insufficient balance",
+  "balance": 0.50,
+  "estimated_cost": 2.52
+}
+```
+
+Common status codes:
+
+| Code | Meaning |
+|------|---------|
+| 200 | Success |
+| 400 | Bad Request |
+| 401 | Unauthorized (invalid API key) |
+| 402 | Payment Required (insufficient balance) |
+| 403 | Forbidden (access denied) |
+| 404 | Not Found |
+| 429 | Too Many Requests (rate limited) |
+| 500 | Internal Server Error |
+
+<Card title="Error Reference" href="/api-reference/errors">
+  Complete error codes and handling guide
+</Card>
+
+## Supported Platforms
+
+| Platform | Metrics | Bot Detection |
+|----------|---------|---------------|
+| **TikTok** | Views, Likes, Comments, Shares, Saves | ✅ |
+| **YouTube** | Views, Likes, Comments | ✅ |
+| **Instagram** | Likes, Comments, Saves | ✅ |
+| **Twitter/X** | Views, Likes, Retweets, Replies | ✅ |
+
+## Data Types
+
+### Video Object
+
+```typescript
+{
+  id: string;
+  job_id: string;
+  video_link: string;
+  platform: 'tiktok' | 'youtube' | 'instagram' | 'twitter';
+  status: 'monitoring' | 'completed' | 'paused' | 'error' | 'cancelled';
+  bot_confidence: number; // 0.0 - 1.0
+  monitoring_started: string; // ISO 8601
+  monitoring_duration_days: number;
+  days_remaining: number;
+  current_metadata: object;
+  created_at: string;
+  last_updated: string;
+}
+```
+
+### Snapshot Object
+
+```typescript
+{
+  id: string;
+  snapshot_id: string;
+  snapshot_time: string; // ISO 8601
+  views: string; // BigInt as string
+  likes: string;
+  comments: string;
+  shares?: string;
+  saves?: string;
+  provider: string;
+}
+```
+
+### Bot Analysis Object
+
+```typescript
+{
+  overall_confidence: number; // 0.0 - 1.0
+  engagement_velocity_score: number;
+  comment_quality_score: number;
+  timing_pattern_score: number;
+  ratio_analysis_score: number;
+  channel_context_score: number;
+  patterns: object;
+  flags: BotFlag[];
+}
+```
+
+## Pagination
+
+List endpoints support pagination:
+
+```bash
+curl "https://contentstats.io/api/v1/videos?limit=50" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+Query parameters:
+- `limit`: Number of results (1-100, default: 50)
+- `platform`: Filter by platform
+- `status`: Filter by status
+
+## Webhooks (Coming Soon)
+
+Subscribe to events:
+- `snapshot.created`
+- `tracking.completed`
+- `bot.detected`
+- `balance.low`
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="shield-check" title="Secure Your API Key">
+    - Store in environment variables
+    - Never commit to version control
+    - Rotate keys every 90 days
+    - Use server-side only
+  </Accordion>
+  
+  <Accordion icon="clock" title="Poll Efficiently">
+    - Snapshots update hourly
+    - Don't poll faster than every hour
+    - Use webhooks when available
+  </Accordion>
+  
+  <Accordion icon="money-bill" title="Monitor Usage">
+    - Check balance before tracking
+    - Set up auto top-up
+    - Monitor usage endpoint regularly
+  </Accordion>
+  
+  <Accordion icon="code" title="Handle Errors">
+    - Implement retry logic with exponential backoff
+    - Handle rate limits gracefully
+    - Log errors for debugging
+  </Accordion>
+</AccordionGroup>
+
+## API Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Track Video" icon="play" href="/api-reference/videos/track-video">
+    POST /videos/track
+  </Card>
+  <Card title="List Videos" icon="list" href="/api-reference/videos/list-videos">
+    GET /videos
+  </Card>
+  <Card title="Get Video" icon="circle-info" href="/api-reference/videos/get-video">
+    GET /videos/{id}
+  </Card>
+  <Card title="Stop Video" icon="stop" href="/api-reference/videos/stop-video">
+    POST /videos/{id}/stop
+  </Card>
+  <Card title="Get Usage" icon="chart-bar" href="/api-reference/usage/get-usage">
+    GET /usage
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Get started in 5 minutes
+  </Card>
+  <Card title="FAQ" icon="question" href="/faq">
+    Common questions answered
+  </Card>
+  <Card title="Support" icon="life-ring" href="/support">
+    Contact our team
+  </Card>
+  <Card title="API Status" icon="signal" href="https://status.contentstats.io">
+    Check API status
+  </Card>
+</CardGroup>

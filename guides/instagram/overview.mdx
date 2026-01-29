@@ -1,0 +1,153 @@
+---
+title: "Instagram Analytics API"
+seoTitle: "Instagram Analytics API | Track Posts Without Business Account"
+description: "Instagram analytics API for tracking posts and reels. No business account required. Get hourly snapshots of likes, comments, and saves with bot detection."
+---
+
+## Instagram Post Tracking Without Business Account
+
+Track Instagram posts and reels without requiring a business account or Facebook API approval. Get hourly snapshots of likes, comments, and saves through a simple REST API.
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Instagram Posts"
+    icon="camera"
+    href="/guides/instagram/track-instagram-performance"
+  >
+    Step-by-step tracking guide
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/videos/track-video"
+  >
+    Technical documentation
+  </Card>
+</CardGroup>
+
+## Why Use Our Instagram API?
+
+<Tabs>
+  <Tab title="No Business Account">
+    Instagram's official API requires:
+    - Business or Creator account
+    - Facebook Page connection
+    - App review process
+    - Limited to your own content
+    
+    **With ContentStats.io:**
+    - ✅ Track ANY public post
+    - ✅ No account requirements
+    - ✅ Simple API key auth
+    - ✅ Instant access
+  </Tab>
+  
+  <Tab title="Track Any Post">
+    Official Instagram API:
+    - Only your own content
+    - Requires account ownership
+    - Business account mandatory
+    
+    **Our approach:**
+    - ✅ Track competitor posts
+    - ✅ Analyze influencer content
+    - ✅ Research trending posts
+    - ✅ Monitor campaigns
+  </Tab>
+  
+  <Tab title="Hourly Updates">
+    Instagram Insights:
+    - ❌ Daily updates only
+    - ❌ Limited historical data
+    - ❌ Requires business account
+    
+    **ContentStats.io:**
+    - ✅ Hourly snapshots
+    - ✅ Unlimited history
+    - ✅ Real-time tracking
+  </Tab>
+</Tabs>
+
+## Instagram Metrics Available
+
+| Metric | Description | Update Frequency |
+|--------|-------------|------------------|
+| **Likes** | Like count | Hourly |
+| **Comments** | Comment count | Hourly |
+| **Saves** | Save/bookmark count | Hourly |
+
+Plus **bot detection** for engagement authenticity.
+
+## Quick Start
+
+```bash
+curl -X POST https://contentstats.io/api/v1/videos/track \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: cs_live_YOUR_KEY" \
+  -d '{
+    "video_link": "https://www.instagram.com/p/ABC123/",
+    "duration_days": 7
+  }'
+```
+
+<Info>
+  Works with both **posts** (`/p/`) and **reels** (`/reel/`).
+</Info>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Influencer Vetting" icon="user-check">
+    Verify engagement authenticity before partnerships
+  </Card>
+  <Card title="Competitor Analysis" icon="chart-line">
+    Track competitor Instagram performance
+  </Card>
+  <Card title="Campaign Monitoring" icon="bullhorn">
+    Monitor influencer campaign results
+  </Card>
+  <Card title="Content Research" icon="magnifying-glass">
+    Analyze what content performs best
+  </Card>
+</CardGroup>
+
+## Supported URL Formats
+
+```
+✅ https://www.instagram.com/p/ABC123/
+✅ https://www.instagram.com/reel/XYZ789/
+✅ https://instagram.com/p/ABC123/
+```
+
+## API Restrictions Comparison
+
+| Restriction | Instagram API | ContentStats.io |
+|-------------|---------------|-----------------|
+| **Business Account** | Required | ✅ Not needed |
+| **Facebook Page** | Required | ✅ Not needed |
+| **App Review** | Required | ✅ Not needed |
+| **Track Own Content Only** | Yes | ✅ Any public post |
+| **Rate Limits** | 200/hour | ✅ 60-300/min |
+
+<Card title="Learn More About Restrictions" href="/guides/instagram/instagram-api-restrictions">
+  Detailed comparison with Instagram's official API restrictions
+</Card>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Instagram Posts"
+    icon="book"
+    href="/guides/instagram/track-instagram-performance"
+  >
+    Complete guide
+  </Card>
+  <Card
+    title="Instagram API Guide"
+    icon="terminal"
+    href="/guides/instagram/instagram-analytics-api"
+  >
+    Developer documentation
+  </Card>
+</CardGroup>

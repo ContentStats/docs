@@ -1,0 +1,447 @@
+---
+title: "Track Video"
+api: "POST /api/v1/videos/track"
+description: "Start tracking a social media video. Get hourly snapshots of views, likes, comments, and more."
+---
+
+## Endpoint
+
+```http
+POST https://contentstats.io/api/v1/videos/track
+```
+
+Start tracking a video from TikTok, YouTube, Instagram, or Twitter/X. We'll collect hourly snapshots for the duration you specify.
+
+## Authentication
+
+<ParamField header="X-API-Key" type="string" required>
+  Your API key from the [dashboard](https://contentstats.io/dashboard/api-keys)
+</ParamField>
+
+## Request Body
+
+<ParamField body="video_link" type="string" required>
+  Full URL of the video to track. Must be a public video.
+  
+  **Supported formats:**
+  - TikTok: `https://www.tiktok.com/@user/video/123`
+  - YouTube: `https://www.youtube.com/watch?v=VIDEO_ID`
+  - Instagram: `https://www.instagram.com/p/POST_ID/`
+  - Twitter: `https://twitter.com/user/status/123`
+</ParamField>
+
+<ParamField body="duration_days" type="integer" required>
+  Number of days to track the video (1-30)
+  
+  **Cost calculation:**
+  ```
+  Duration (days) × 24 hours × $0.015 per snapshot
+  ```
+  
+  Example: 7 days = 168 snapshots = $2.52
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for this tracked video
+</ResponseField>
+
+<ResponseField name="job_id" type="string">
+  External job ID for tracking
+</ResponseField>
+
+<ResponseField name="video_link" type="string">
+  The video URL being tracked
+</ResponseField>
+
+<ResponseField name="platform" type="string">
+  Detected platform: `tiktok`, `youtube`, `instagram`, or `twitter`
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status: `monitoring`, `completed`, `paused`, `error`, `cancelled`
+</ResponseField>
+
+<ResponseField name="monitoring_duration_days" type="integer">
+  Total days video will be tracked
+</ResponseField>
+
+<ResponseField name="days_remaining" type="number">
+  Days remaining in tracking period
+</ResponseField>
+
+<ResponseField name="estimated_cost" type="number">
+  Estimated total cost in USD
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp when tracking started
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://contentstats.io/api/v1/videos/track \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: cs_live_YOUR_KEY" \
+  -d '{
+    "video_link": "https://www.tiktok.com/@user/video/7234567890",
+    "duration_days": 7
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': process.env.CONTENTSTATS_API_KEY
+  },
+  body: JSON.stringify({
+    video_link: 'https://www.tiktok.com/@user/video/7234567890',
+    duration_days: 7
+  })
+});
+
+const data = await response.json();
+console.log('Tracking ID:', data.id);
+```
+
+```python Python
+import requests
+import os
+
+response = requests.post(
+    'https://contentstats.io/api/v1/videos/track',
+    headers={
+        'Content-Type': 'application/json',
+        'X-API-Key': os.environ['CONTENTSTATS_API_KEY']
+    },
+    json={
+        'video_link': 'https://www.tiktok.com/@user/video/7234567890',
+        'duration_days': 7
+    }
+)
+
+data = response.json()
+print(f"Tracking ID: {data['id']}")
+```
+
+```php PHP
+<?php
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+    CURLOPT_URL => 'https://contentstats.io/api/v1/videos/track',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => [
+        'Content-Type: application/json',
+        'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+    ],
+    CURLOPT_POSTFIELDS => json_encode([
+        'video_link' => 'https://www.tiktok.com/@user/video/7234567890',
+        'duration_days' => 7
+    ])
+]);
+
+$response = curl_exec($curl);
+$data = json_decode($response, true);
+
+echo "Tracking ID: " . $data['id'];
+?>
+```
+
+```go Go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "io"
+    "net/http"
+    "os"
+)
+
+type TrackRequest struct {
+    VideoLink    string `json:"video_link"`
+    DurationDays int    `json:"duration_days"`
+}
+
+func trackVideo() error {
+    payload := TrackRequest{
+        VideoLink:    "https://www.tiktok.com/@user/video/7234567890",
+        DurationDays: 7,
+    }
+    
+    body, _ := json.Marshal(payload)
+    
+    req, _ := http.NewRequest(
+        "POST",
+        "https://contentstats.io/api/v1/videos/track",
+        bytes.NewBuffer(body),
+    )
+    
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("X-API-Key", os.Getenv("CONTENTSTATS_API_KEY"))
+    
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+    
+    var result map[string]interface{}
+    json.NewDecoder(resp.Body).Decode(&result)
+    
+    return nil
+}
+```
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "id": "cm5abc123def",
+  "job_id": "job_xyz789",
+  "video_link": "https://www.tiktok.com/@user/video/7234567890",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "monitoring_duration_days": 7,
+  "days_remaining": 7,
+  "estimated_cost": 2.52,
+  "created_at": "2024-01-29T10:00:00.000Z"
+}
+```
+
+## Error Responses
+
+### 400 Bad Request
+
+Invalid request parameters:
+
+```json
+{
+  "error": "Invalid request",
+  "details": [
+    {
+      "field": "video_link",
+      "message": "Invalid URL format"
+    }
+  ]
+}
+```
+
+**Common causes:**
+- Invalid video URL format
+- Duration outside 1-30 days range
+- Missing required fields
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "API key required"
+}
+```
+
+Missing or invalid `X-API-Key` header.
+
+### 402 Payment Required
+
+```json
+{
+  "error": "Insufficient balance",
+  "balance": 0.50,
+  "estimated_cost": 2.52,
+  "required": 2.02
+}
+```
+
+Not enough credit to start tracking. [Add credits](https://contentstats.io/dashboard/billing).
+
+### 404 Not Found
+
+```json
+{
+  "error": "Video not found or is private"
+}
+```
+
+Video is private, deleted, or URL is invalid.
+
+### 500 Internal Server Error
+
+```json
+{
+  "error": "Failed to start monitoring - invalid response from tracking API"
+}
+```
+
+Platform error or temporary issue. Retry in a few minutes.
+
+## What Happens Next
+
+After starting tracking:
+
+1. **First snapshot** collected within 60 minutes
+2. **Hourly snapshots** continue for the specified duration
+3. **Bot analysis** runs automatically on each snapshot
+4. **Balance charged** $0.015 per snapshot
+5. **Email notification** when tracking completes
+
+## Supported Platforms
+
+<Tabs>
+  <Tab title="TikTok">
+    **URL formats:**
+    ```
+    https://www.tiktok.com/@username/video/1234567890
+    https://vm.tiktok.com/abc123/
+    https://www.tiktok.com/t/abc123/
+    ```
+    
+    **Metrics tracked:**
+    - Views
+    - Likes
+    - Comments
+    - Shares
+    - Saves
+  </Tab>
+  
+  <Tab title="YouTube">
+    **URL formats:**
+    ```
+    https://www.youtube.com/watch?v=VIDEO_ID
+    https://youtu.be/VIDEO_ID
+    https://www.youtube.com/embed/VIDEO_ID
+    ```
+    
+    **Metrics tracked:**
+    - Views
+    - Likes
+    - Comments
+  </Tab>
+  
+  <Tab title="Instagram">
+    **URL formats:**
+    ```
+    https://www.instagram.com/p/POST_ID/
+    https://www.instagram.com/reel/REEL_ID/
+    ```
+    
+    **Metrics tracked:**
+    - Likes
+    - Comments
+    - Saves
+  </Tab>
+  
+  <Tab title="Twitter/X">
+    **URL formats:**
+    ```
+    https://twitter.com/user/status/1234567890
+    https://x.com/user/status/1234567890
+    ```
+    
+    **Metrics tracked:**
+    - Views
+    - Likes
+    - Retweets
+    - Replies
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="money-bill" title="Check Balance First">
+    Verify sufficient balance before tracking:
+    
+    ```javascript
+    const usage = await fetch('https://contentstats.io/api/v1/usage', {
+      headers: { 'X-API-Key': apiKey }
+    }).then(r => r.json());
+    
+    const estimatedCost = duration_days * 24 * 0.015;
+    
+    if (usage.balance_usd < estimatedCost) {
+      throw new Error('Insufficient balance');
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="list-check" title="Validate URLs">
+    Validate video URLs before sending:
+    
+    ```javascript
+    function isValidVideoUrl(url) {
+      const patterns = [
+        /^https:\/\/(www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+/,
+        /^https:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/,
+        /^https:\/\/(www\.)?instagram\.com\/(p|reel)\/[\w-]+/,
+        /^https:\/\/(twitter|x)\.com\/\w+\/status\/\d+/
+      ];
+      
+      return patterns.some(pattern => pattern.test(url));
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="database" title="Store Tracking IDs">
+    Save the returned `id` to retrieve data later:
+    
+    ```javascript
+    const result = await trackVideo(url, 7);
+    
+    // Store in database
+    await db.trackedVideos.create({
+      contentStatsId: result.id,
+      videoUrl: url,
+      platform: result.platform,
+      startedAt: result.created_at
+    });
+    ```
+  </Accordion>
+  
+  <Accordion icon="rotate" title="Handle Duplicates">
+    Check if already tracking before creating new job:
+    
+    ```javascript
+    // List existing videos
+    const existing = await fetch(
+      'https://contentstats.io/api/v1/videos?platform=tiktok',
+      { headers: { 'X-API-Key': apiKey } }
+    ).then(r => r.json());
+    
+    // Check if URL already tracked
+    const alreadyTracking = existing.videos.find(
+      v => v.video_link === newUrl && v.status === 'monitoring'
+    );
+    
+    if (alreadyTracking) {
+      return alreadyTracking; // Reuse existing
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Get Video Data" icon="circle-info" href="/api-reference/videos/get-video">
+    Retrieve snapshots and bot analysis
+  </Card>
+  <Card title="List Videos" icon="list" href="/api-reference/videos/list-videos">
+    View all tracked videos
+  </Card>
+  <Card title="Stop Tracking" icon="stop" href="/api-reference/videos/stop-video">
+    End tracking early
+  </Card>
+  <Card title="Platform Guides" icon="book" href="/guides/tiktok/track-tiktok-videos">
+    Platform-specific tutorials
+  </Card>
+</CardGroup>

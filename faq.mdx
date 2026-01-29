@@ -1,0 +1,404 @@
+---
+title: "Frequently Asked Questions"
+seoTitle: "FAQ | ContentStats.io Social Media Analytics API"
+description: "Common questions about ContentStats.io. Learn about pricing, supported platforms, bot detection, API usage, and more."
+---
+
+## General Questions
+
+<AccordionGroup>
+  <Accordion title="What is ContentStats.io?">
+    ContentStats.io is a social media analytics API that tracks video performance across TikTok, YouTube, Instagram, and Twitter. We provide hourly snapshots, bot detection, and historical data through a simple REST API.
+    
+    Unlike official platform APIs, we don't require approval, business accounts, or complex OAuth flows.
+  </Accordion>
+  
+  <Accordion title="How is this different from official APIs?">
+    **Official APIs (TikTok, Instagram, YouTube):**
+    - Require approval (weeks/months wait)
+    - Complex OAuth implementation
+    - Limited to your own content
+    - Daily quotas and strict rate limits
+    
+    **ContentStats.io:**
+    - ✅ Instant access with API key
+    - ✅ Track ANY public video
+    - ✅ No quotas or approval process
+    - ✅ Built-in bot detection
+    - ✅ Hourly automated tracking
+  </Accordion>
+  
+  <Accordion title="Is this legal?">
+    **Yes.** We only access publicly available data through legitimate means. We don't:
+    - Violate platform Terms of Service
+    - Access private or restricted content
+    - Use harmful scraping techniques
+    - Store personal user data
+    
+    We're similar to analytics tools like Social Blade or HypeAuditor.
+  </Accordion>
+  
+  <Accordion title="What platforms do you support?">
+    We currently support:
+    - **TikTok**: Views, likes, comments, shares, saves
+    - **YouTube**: Views, likes, comments
+    - **Instagram**: Likes, comments, saves
+    - **Twitter/X**: Views, likes, retweets, replies
+    
+    All platforms include AI-powered bot detection.
+  </Accordion>
+</AccordionGroup>
+
+## Pricing & Billing
+
+<AccordionGroup>
+  <Accordion title="How much does it cost?">
+    **Simple pay-per-use pricing:**
+    - $0.015 per snapshot
+    - No subscriptions or monthly fees
+    - $5 free credit for new accounts (~333 snapshots)
+    
+    **Example:** Track a video for 7 days
+    ```
+    7 days × 24 hours = 168 snapshots
+    168 × $0.015 = $2.52
+    ```
+  </Accordion>
+  
+  <Accordion title="How does billing work?">
+    - Charged per snapshot collected
+    - Snapshots collected hourly
+    - Deducted from your account balance
+    - Add credits anytime (minimum $10)
+    - Optional auto top-up available
+    
+    **Example:** If you track 10 videos for 7 days each:
+    ```
+    10 videos × 168 snapshots = 1,680 snapshots
+    1,680 × $0.015 = $25.20 total
+    ```
+  </Accordion>
+  
+  <Accordion title="What if I run out of credits?">
+    When balance reaches $0:
+    - Active tracking automatically pauses
+    - All collected data is preserved
+    - Add credits to resume tracking
+    - Tracking continues from where it left off
+    
+    Set up auto top-up to never run out!
+  </Accordion>
+  
+  <Accordion title="Can I get a refund?">
+    Yes! Unused credits can be refunded within 30 days of purchase. You're never charged for:
+    - Failed snapshots
+    - Platform errors
+    - Videos that were deleted
+    
+    Contact [support@contentstats.io](mailto:support@contentstats.io) for refunds.
+  </Accordion>
+  
+  <Accordion title="Do you offer enterprise pricing?">
+    Yes! For high-volume usage (1M+ snapshots/month), we offer:
+    - Volume discounts
+    - Custom rate limits
+    - Dedicated infrastructure
+    - Priority support
+    - SLA guarantees
+    
+    Contact [sales@contentstats.io](mailto:sales@contentstats.io).
+  </Accordion>
+</AccordionGroup>
+
+## Technical Questions
+
+<AccordionGroup>
+  <Accordion title="How often do you collect snapshots?">
+    We collect snapshots **every hour** for the duration you specify. This means:
+    - 24 snapshots per day
+    - 168 snapshots per week
+    - 720 snapshots per month
+    
+    First snapshot within 60 minutes of starting tracking.
+  </Accordion>
+  
+  <Accordion title="How long is data stored?">
+    **Forever!** All historical data is stored indefinitely at no extra cost. You can access snapshots from videos tracked months or years ago.
+  </Accordion>
+  
+  <Accordion title="Can I track private videos?">
+    **No.** We can only track publicly accessible content:
+    - ✅ Public TikTok videos
+    - ✅ Public YouTube videos (and unlisted)
+    - ✅ Public Instagram posts/reels
+    - ✅ Public tweets/X posts
+    - ❌ Private accounts
+    - ❌ Age-restricted content
+    - ❌ Deleted videos
+  </Accordion>
+  
+  <Accordion title="What are the rate limits?">
+    Rate limits depend on your plan:
+    
+    | Plan | Rate Limit |
+    |------|-----------|
+    | Free | 60 requests/minute |
+    | Pro | 300 requests/minute |
+    | Enterprise | Custom |
+    
+    Headers included in every response:
+    - `X-RateLimit-Limit`
+    - `X-RateLimit-Remaining`
+    - `X-RateLimit-Reset`
+  </Accordion>
+  
+  <Accordion title="Do you have SDKs or libraries?">
+    **Coming soon!** We're building official SDKs for:
+    - JavaScript/TypeScript
+    - Python
+    - PHP
+    - Go
+    - Ruby
+    
+    For now, use our simple REST API directly. See [API Reference](/api-reference/introduction).
+  </Accordion>
+  
+  <Accordion title="Can I use webhooks?">
+    **Coming soon!** Webhook support is in development. You'll be able to subscribe to:
+    - `snapshot.created` - New snapshot collected
+    - `tracking.completed` - Tracking finished
+    - `bot.detected` - High bot score detected
+    - `balance.low` - Balance below threshold
+  </Accordion>
+</AccordionGroup>
+
+## Bot Detection
+
+<AccordionGroup>
+  <Accordion title="How does bot detection work?">
+    Our AI analyzes multiple signals to detect fake engagement:
+    
+    1. **Engagement Velocity**: Unusual spike patterns
+    2. **Comment Quality**: Generic/spammy comments
+    3. **Timing Patterns**: 24/7 engagement without dips
+    4. **Ratio Analysis**: Suspicious metrics ratios
+    5. **Channel Context**: Account age and history
+    
+    **Bot confidence score:**
+    - 0.0 - 0.3 = Authentic
+    - 0.3 - 0.5 = Suspicious
+    - 0.5 - 0.7 = Likely botted
+    - 0.7 - 1.0 = Definitely botted
+  </Accordion>
+  
+  <Accordion title="How accurate is bot detection?">
+    Our AI model achieves **87% accuracy** in detecting bot-driven engagement, trained on millions of videos across all platforms.
+    
+    We continuously improve the model with new patterns and user feedback.
+  </Accordion>
+  
+  <Accordion title="Can I see why engagement was flagged?">
+    Yes! Each video includes detailed `bot_analysis` with:
+    - Individual score for each detection method
+    - Specific patterns identified
+    - Flags with severity levels (low/medium/high)
+    - Evidence supporting the detection
+    
+    Example:
+    ```json
+    {
+      "flags": [
+        {
+          "type": "engagement_spike",
+          "severity": "high",
+          "description": "Unusual like velocity detected",
+          "evidence": { "spike_at": "2024-01-29T15:00:00Z" }
+        }
+      ]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Account & API Keys
+
+<AccordionGroup>
+  <Accordion title="How do I get an API key?">
+    1. [Sign up](https://contentstats.io/auth/signup) (free)
+    2. Go to [Dashboard → API Keys](https://contentstats.io/dashboard/api-keys)
+    3. Click "Create New Key"
+    4. Copy and save your key (shown once)
+    
+    Keys start with `cs_live_` for production or `cs_test_` for testing.
+  </Accordion>
+  
+  <Accordion title="Can I have multiple API keys?">
+    Yes! Create multiple keys for:
+    - Different environments (dev, staging, prod)
+    - Team members
+    - Different applications
+    
+    Track usage per key in your dashboard.
+  </Accordion>
+  
+  <Accordion title="What if my API key is compromised?">
+    If your key is exposed:
+    1. **Delete it immediately** in dashboard
+    2. **Create a new key**
+    3. **Update your application**
+    4. **Review usage logs** for unauthorized activity
+    
+    Deleted keys stop working instantly.
+  </Accordion>
+  
+  <Accordion title="Do API keys expire?">
+    No, API keys don't expire automatically. However, we recommend:
+    - Rotating keys every 90 days
+    - Deleting unused keys
+    - Using separate keys per environment
+  </Accordion>
+</AccordionGroup>
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Can I track my competitors?">
+    **Yes!** Track any public video from any account. Common uses:
+    - Monitor competitor content performance
+    - Analyze their engagement patterns
+    - Track their posting frequency
+    - Identify their top-performing content
+    
+    This is impossible with official APIs (they only allow tracking your own content).
+  </Accordion>
+  
+  <Accordion title="Can I verify influencer engagement?">
+    **Yes!** Perfect for influencer vetting:
+    - Track their recent posts for 3-7 days
+    - Check bot confidence scores
+    - Analyze engagement patterns
+    - Verify authentic vs. fake engagement
+    
+    Our bot detection helps avoid partnerships with fake influencers.
+  </Accordion>
+  
+  <Accordion title="Can I track trending videos?">
+    **Yes!** Track any public trending video:
+    - Identify what goes viral in your niche
+    - Analyze viral patterns
+    - Research content strategies
+    - Monitor hashtag performance
+  </Accordion>
+  
+  <Accordion title="Can I track my own content?">
+    **Absolutely!** Track your own videos to:
+    - Monitor performance in real-time
+    - Get hourly growth data
+    - Detect bot activity on your content
+    - Build historical performance database
+    
+    Much more powerful than native platform analytics.
+  </Accordion>
+</AccordionGroup>
+
+## Platform-Specific
+
+<AccordionGroup>
+  <Accordion title="How to track TikTok videos?">
+    See our complete guide: [How to Track TikTok Videos](/guides/tiktok/track-tiktok-videos)
+    
+    **Quick example:**
+    ```bash
+    curl -X POST https://contentstats.io/api/v1/videos/track \
+      -H "X-API-Key: YOUR_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "video_link": "https://www.tiktok.com/@user/video/123",
+        "duration_days": 7
+      }'
+    ```
+  </Accordion>
+  
+  <Accordion title="How to get YouTube video stats?">
+    See: [How to Get YouTube Video Stats](/guides/youtube/get-youtube-stats)
+    
+    No YouTube Data API quotas or OAuth needed!
+  </Accordion>
+  
+  <Accordion title="Does this work with Instagram Reels?">
+    **Yes!** We support both:
+    - Instagram posts (`/p/...`)
+    - Instagram reels (`/reel/...`)
+    
+    Same metrics for both: likes, comments, saves.
+  </Accordion>
+  
+  <Accordion title="Can I track TikTok Live videos?">
+    **Not yet.** Currently we only support:
+    - Regular TikTok videos
+    - YouTube videos (not livestreams)
+    - Instagram posts/reels
+    - Twitter/X posts
+    
+    Live stream support coming soon!
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Why is tracking not starting?">
+    Common causes:
+    - **Insufficient balance**: Add credits
+    - **Invalid video URL**: Check URL format
+    - **Private video**: Only public videos work
+    - **Video deleted**: Cannot track deleted content
+    
+    Check the error message in API response for details.
+  </Accordion>
+  
+  <Accordion title="Why aren't snapshots appearing?">
+    - **First snapshot takes up to 1 hour**
+    - Platform delays (YouTube especially)
+    - Video was deleted
+    - Platform temporarily unavailable
+    
+    Wait 60 minutes after starting tracking.
+  </Accordion>
+  
+  <Accordion title="Why did tracking stop?">
+    Tracking auto-stops when:
+    - Balance reaches $0 (pauses until you add credits)
+    - Duration completed
+    - Video was deleted
+    - You manually stopped it
+    
+    Check video status in dashboard or via API.
+  </Accordion>
+  
+  <Accordion title="Why are view counts not updating?">
+    Platforms cache view counts:
+    - **YouTube**: Can cache for hours
+    - **TikTok**: Usually real-time
+    - **Instagram**: Updates frequently
+    
+    This is platform behavior, not our limitation.
+  </Accordion>
+</AccordionGroup>
+
+## Still Have Questions?
+
+<CardGroup cols={2}>
+  <Card title="Contact Support" icon="life-ring" href="/support">
+    Get help from our team
+  </Card>
+  <Card title="API Documentation" icon="book" href="/api-reference/introduction">
+    Technical documentation
+  </Card>
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Get started in 5 minutes
+  </Card>
+  <Card title="Platform Status" icon="signal" href="https://status.contentstats.io">
+    Check API status
+  </Card>
+</CardGroup>

@@ -1,0 +1,292 @@
+---
+title: "Pricing"
+seoTitle: "Affordable Social Media API Pricing | Pay Per Use"
+description: "Simple pay-per-use pricing at $0.015 per snapshot. No subscriptions, no monthly fees. Track TikTok, YouTube, Instagram, and Twitter videos with transparent pricing."
+---
+
+## Simple, Pay-Per-Use Pricing
+
+No subscriptions. No monthly fees. Only pay for what you use.
+
+<CardGroup cols={1}>
+  <Card title="Pay Per Snapshot" icon="dollar-sign">
+    <div style={{fontSize: '48px', fontWeight: 'bold', margin: '20px 0'}}>
+      $0.015
+    </div>
+    <div style={{fontSize: '18px', color: '#666'}}>
+      per snapshot
+    </div>
+    
+    <div style={{marginTop: '30px'}}>
+      <ul style={{textAlign: 'left', lineHeight: '1.8'}}>
+        <li>✅ Hourly snapshots for all platforms</li>
+        <li>✅ Built-in bot detection & analysis</li>
+        <li>✅ Complete historical data</li>
+        <li>✅ No minimums or commitments</li>
+        <li>✅ Start with $5 free credit (~333 snapshots)</li>
+      </ul>
+    </div>
+  </Card>
+</CardGroup>
+
+## Cost Calculator
+
+Estimate your monthly costs:
+
+| Videos Tracked | Duration Each | Snapshots/Month | Monthly Cost |
+|----------------|---------------|-----------------|--------------|
+| 10 videos | 7 days | 1,680 | **$25.20** |
+| 25 videos | 7 days | 4,200 | **$63.00** |
+| 50 videos | 14 days | 16,800 | **$252.00** |
+| 100 videos | 7 days | 16,800 | **$252.00** |
+
+<Info>
+  **Formula**: Videos × Duration (days) × 24 hours × $0.015
+</Info>
+
+## What's Included
+
+Every snapshot includes:
+
+<Tabs>
+  <Tab title="Platform Metrics">
+    - **Views** (all platforms)
+    - **Likes** (all platforms)
+    - **Comments** (all platforms)
+    - **Shares** (TikTok, Twitter)
+    - **Saves** (TikTok, Instagram)
+    - **Retweets** (Twitter)
+  </Tab>
+  
+  <Tab title="Bot Analysis">
+    - Overall bot confidence score
+    - Engagement velocity analysis
+    - Comment quality scoring
+    - Timing pattern detection
+    - Ratio analysis
+    - Channel context scoring
+    - Detailed flag reports
+  </Tab>
+  
+  <Tab title="Historical Data">
+    - Complete timeline from tracking start
+    - Hourly granularity
+    - Growth pattern analysis
+    - Engagement rate tracking
+    - Unlimited data retention
+  </Tab>
+</Tabs>
+
+## Free Tier
+
+Get started with no credit card:
+
+<CardGroup cols={2}>
+  <Card title="$5 Free Credit" icon="gift">
+    Every new account receives $5 in free credits
+    
+    **~333 free snapshots**
+    
+    Perfect for testing and small projects
+  </Card>
+  
+  <Card title="No Expiration" icon="infinity">
+    Credits never expire
+    
+    Use them at your own pace
+    
+    No time pressure
+  </Card>
+</CardGroup>
+
+## Example Use Cases
+
+<AccordionGroup>
+  <Accordion title="Influencer Campaign Tracking">
+    **Scenario**: Track 20 sponsored posts across TikTok and Instagram for 14 days
+    
+    ```
+    20 videos × 14 days × 24 hours × $0.015 = $100.80
+    ```
+    
+    Get complete performance data and bot analysis for your entire campaign.
+  </Accordion>
+  
+  <Accordion title="Competitor Analysis">
+    **Scenario**: Monitor 10 competitor videos for 7 days
+    
+    ```
+    10 videos × 7 days × 24 hours × $0.015 = $25.20
+    ```
+    
+    Understand what content performs in your niche.
+  </Accordion>
+  
+  <Accordion title="Content Research">
+    **Scenario**: Analyze 50 trending videos for 3 days
+    
+    ```
+    50 videos × 3 days × 24 hours × $0.015 = $54.00
+    ```
+    
+    Identify patterns in viral content.
+  </Accordion>
+  
+  <Accordion title="Ongoing Monitoring">
+    **Scenario**: Track your top 5 videos continuously for 30 days
+    
+    ```
+    5 videos × 30 days × 24 hours × $0.015 = $54.00/month
+    ```
+    
+    Monitor your best content long-term.
+  </Accordion>
+</AccordionGroup>
+
+## Compared to Official APIs
+
+| Feature | ContentStats.io | TikTok Official | YouTube Official | Instagram Official |
+|---------|----------------|-----------------|------------------|-------------------|
+| **Cost** | $0.015/snapshot | Application required | Free (quotas) | Application required |
+| **Approval** | Instant | Weeks/months | Instant | Weeks/months |
+| **Restrictions** | None | Strict ToS | 10k quota/day | Business accounts only |
+| **Bot Detection** | ✅ Included | ❌ No | ❌ No | ❌ No |
+| **Hourly Updates** | ✅ Yes | ❌ Limited | ❌ No | ❌ No |
+| **Public Videos** | ✅ Any video | ❌ Own content | ❌ Own content | ❌ Own content |
+
+<Card title="Why Our Pricing Works" icon="chart-line">
+  We charge a transparent markup on our infrastructure costs ($0.00188 per snapshot). This allows us to:
+  
+  - Maintain reliable hourly tracking
+  - Provide AI-powered bot detection
+  - Store unlimited historical data
+  - Offer responsive support
+  
+  **87.5% of your payment** goes to infrastructure and R&D.
+</Card>
+
+## Billing & Top-Ups
+
+### Auto Top-Up (Optional)
+
+Configure automatic top-ups to never run out of credit:
+
+1. Set a **threshold** (e.g., when balance drops below $10)
+2. Set a **top-up amount** (e.g., add $50)
+3. We charge your card automatically
+
+### Manual Top-Up
+
+Add credits anytime:
+
+- Minimum: $10
+- Maximum: $1,000 per transaction
+- Instant credit addition
+- All major credit cards accepted
+
+## Cost Control
+
+<AccordionGroup>
+  <Accordion icon="gauge-high" title="Real-Time Balance">
+    Check your balance anytime via API:
+    
+    ```bash
+    curl https://contentstats.io/api/v1/usage \
+      -H "X-API-Key: YOUR_KEY"
+    ```
+  </Accordion>
+  
+  <Accordion icon="hand" title="Stop Anytime">
+    Stop tracking to prevent further charges:
+    
+    ```bash
+    curl -X POST https://contentstats.io/api/v1/videos/{id}/stop \
+      -H "X-API-Key: YOUR_KEY"
+    ```
+  </Accordion>
+  
+  <Accordion icon="bell" title="Low Balance Alerts">
+    Get email notifications when:
+    - Balance drops below your threshold
+    - Videos pause due to low balance
+    - Tracking completes
+  </Accordion>
+  
+  <Accordion icon="pause" title="Automatic Pause">
+    If balance reaches $0:
+    - Tracking automatically pauses
+    - Data is preserved
+    - Resume after adding credits
+  </Accordion>
+</AccordionGroup>
+
+## Enterprise Pricing
+
+Need higher volume or custom features?
+
+<CardGroup cols={2}>
+  <Card title="Volume Discounts" icon="percent">
+    Get reduced rates for:
+    - 1M+ snapshots/month
+    - Long-term contracts
+    - Custom integrations
+  </Card>
+  
+  <Card title="Custom Solutions" icon="wrench">
+    - Dedicated infrastructure
+    - Custom retention policies
+    - Priority support
+    - SLA guarantees
+  </Card>
+</CardGroup>
+
+<Card title="Contact Sales" icon="envelope" href="mailto:sales@contentstats.io">
+  Discuss enterprise pricing and custom solutions
+</Card>
+
+## Refund Policy
+
+<AccordionGroup>
+  <Accordion title="Can I get a refund?">
+    Unused credits can be refunded within 30 days of purchase. Contact support with your request.
+  </Accordion>
+  
+  <Accordion title="What about failed snapshots?">
+    You're never charged for failed snapshots. If a platform error prevents data collection, no charge is incurred.
+  </Accordion>
+  
+  <Accordion title="Duplicate tracking?">
+    Tracking the same video multiple times creates separate jobs. Stop old jobs to avoid duplicate charges.
+  </Accordion>
+</AccordionGroup>
+
+## Payment Methods
+
+We accept:
+
+- 💳 Credit cards (Visa, Mastercard, Amex)
+- 💳 Debit cards
+- 🏦 ACH transfers (Enterprise only)
+- 💰 Wire transfers (Enterprise only)
+
+All payments processed securely through [Polar.sh](https://polar.sh).
+
+## Start Free
+
+<Steps>
+  <Step title="Sign Up">
+    Create account at [contentstats.io/auth/signup](https://contentstats.io/auth/signup)
+  </Step>
+  
+  <Step title="Get $5 Credit">
+    Receive 333 free snapshots automatically
+  </Step>
+  
+  <Step title="Start Tracking">
+    Track videos with no credit card required
+  </Step>
+</Steps>
+
+<Note>
+  Questions about pricing? Check our [FAQ](/faq) or [contact support](/support).
+</Note>

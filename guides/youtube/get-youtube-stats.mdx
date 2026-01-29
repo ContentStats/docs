@@ -1,0 +1,501 @@
+---
+title: "How to Get YouTube Video Stats"
+seoTitle: "How to Get YouTube Video Stats with API | Tutorial 2026"
+description: "Learn how to get YouTube video statistics programmatically. Track views, likes, and comments hourly without YouTube API quotas. Simple REST API with code examples."
+---
+
+## Get YouTube Video Statistics Programmatically
+
+This guide shows you how to track YouTube video statistics using the ContentStats.io API. Get hourly snapshots of views, likes, and comments without YouTube Data API quotas.
+
+<Note>
+  **No YouTube API credentials needed.** Just use your ContentStats.io API key.
+</Note>
+
+## What You'll Get
+
+Track these YouTube metrics hourly:
+
+- **Views**: Total view count
+- **Likes**: Like count (dislikes no longer public)
+- **Comments**: Total comment count
+- **Bot Analysis**: AI-powered authenticity scoring
+
+## Step-by-Step Guide
+
+<Steps>
+  <Step title="Get Your API Key">
+    1. Sign up at [contentstats.io/auth/signup](https://contentstats.io/auth/signup)
+    2. Go to [Dashboard → API Keys](https://contentstats.io/dashboard/api-keys)
+    3. Click **"Create New Key"**
+    4. Copy and save your key
+  </Step>
+
+  <Step title="Find a YouTube Video">
+    Get the URL of any public YouTube video:
+    
+    ```
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    https://youtu.be/dQw4w9WgXcQ
+    ```
+    
+    Both formats work!
+  </Step>
+
+  <Step title="Start Tracking">
+    Send a POST request to start tracking:
+    
+    <CodeGroup>
+      ```bash cURL
+      curl -X POST https://contentstats.io/api/v1/videos/track \
+        -H "Content-Type: application/json" \
+        -H "X-API-Key: cs_live_YOUR_KEY" \
+        -d '{
+          "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "duration_days": 7
+        }'
+      ```
+
+      ```javascript JavaScript
+      const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.CONTENTSTATS_API_KEY
+        },
+        body: JSON.stringify({
+          video_link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          duration_days: 7
+        })
+      });
+
+      const data = await response.json();
+      console.log('Video ID:', data.id);
+      ```
+
+      ```python Python
+      import requests
+      import os
+
+      response = requests.post(
+          'https://contentstats.io/api/v1/videos/track',
+          headers={
+              'Content-Type': 'application/json',
+              'X-API-Key': os.environ['CONTENTSTATS_API_KEY']
+          },
+          json={
+              'video_link': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+              'duration_days': 7
+          }
+      )
+
+      data = response.json()
+      print(f"Video ID: {data['id']}")
+      ```
+    </CodeGroup>
+
+    **Response:**
+    ```json
+    {
+      "id": "cm5xyz789",
+      "job_id": "job_abc123",
+      "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "platform": "youtube",
+      "status": "monitoring",
+      "estimated_cost": 2.52,
+      "monitoring_duration_days": 7
+    }
+    ```
+  </Step>
+
+  <Step title="Retrieve Statistics">
+    After 1 hour, get your first snapshot:
+    
+    <CodeGroup>
+      ```bash cURL
+      curl https://contentstats.io/api/v1/videos/cm5xyz789 \
+        -H "X-API-Key: cs_live_YOUR_KEY"
+      ```
+
+      ```javascript JavaScript
+      const response = await fetch(
+        'https://contentstats.io/api/v1/videos/cm5xyz789',
+        {
+          headers: {
+            'X-API-Key': process.env.CONTENTSTATS_API_KEY
+          }
+        }
+      );
+
+      const video = await response.json();
+      
+      // Latest snapshot
+      const latest = video.snapshots[video.snapshots.length - 1];
+      console.log('Views:', latest.views);
+      console.log('Likes:', latest.likes);
+      console.log('Comments:', latest.comments);
+      ```
+
+      ```python Python
+      response = requests.get(
+          'https://contentstats.io/api/v1/videos/cm5xyz789',
+          headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+      )
+
+      video = response.json()
+      
+      # Latest snapshot
+      latest = video['snapshots'][-1]
+      print(f"Views: {latest['views']}")
+      print(f"Likes: {latest['likes']}")
+      print(f"Comments: {latest['comments']}")
+      ```
+    </CodeGroup>
+
+    **Response:**
+    ```json
+    {
+      "id": "cm5xyz789",
+      "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "platform": "youtube",
+      "status": "monitoring",
+      "bot_confidence": 0.05,
+      "snapshots": [
+        {
+          "snapshot_time": "2024-01-29T10:00:00Z",
+          "views": "1425000000",
+          "likes": "14000000",
+          "comments": "1250000"
+        },
+        {
+          "snapshot_time": "2024-01-29T11:00:00Z",
+          "views": "1425055000",
+          "likes": "14001200",
+          "comments": "1250150"
+        }
+      ]
+    }
+    ```
+  </Step>
+</Steps>
+
+## Analyzing the Data
+
+### Growth Over Time
+
+Calculate hourly growth:
+
+```javascript
+function calculateGrowth(snapshots) {
+  const growth = [];
+  
+  for (let i = 1; i < snapshots.length; i++) {
+    const current = snapshots[i];
+    const previous = snapshots[i - 1];
+    
+    growth.push({
+      time: current.snapshot_time,
+      views_gained: parseInt(current.views) - parseInt(previous.views),
+      likes_gained: parseInt(current.likes) - parseInt(previous.likes),
+      comments_gained: parseInt(current.comments) - parseInt(previous.comments)
+    });
+  }
+  
+  return growth;
+}
+
+const growth = calculateGrowth(video.snapshots);
+console.log('Hourly view growth:', growth.map(g => g.views_gained));
+```
+
+### Engagement Rate
+
+Calculate engagement percentage:
+
+```python
+def calculate_engagement_rate(snapshot):
+    views = int(snapshot['views'])
+    likes = int(snapshot['likes'])
+    comments = int(snapshot['comments'])
+    
+    total_engagement = likes + comments
+    engagement_rate = (total_engagement / views) * 100
+    
+    return round(engagement_rate, 2)
+
+latest = video['snapshots'][-1]
+rate = calculate_engagement_rate(latest)
+print(f"Engagement rate: {rate}%")
+```
+
+### Bot Detection Score
+
+Interpret bot confidence:
+
+```javascript
+function interpretBotScore(confidence) {
+  if (confidence < 0.3) {
+    return '✅ Authentic engagement';
+  } else if (confidence < 0.5) {
+    return '⚠️ Some suspicious activity';
+  } else if (confidence < 0.7) {
+    return '🚨 Likely bot-driven';
+  } else {
+    return '❌ Definitely botted';
+  }
+}
+
+console.log('Bot analysis:', interpretBotScore(video.bot_confidence));
+```
+
+## Supported YouTube URL Formats
+
+We accept all YouTube URL formats:
+
+```
+✅ https://www.youtube.com/watch?v=VIDEO_ID
+✅ https://youtu.be/VIDEO_ID
+✅ https://www.youtube.com/embed/VIDEO_ID
+✅ https://m.youtube.com/watch?v=VIDEO_ID
+✅ https://www.youtube.com/watch?v=VIDEO_ID&t=30s
+```
+
+<Info>
+  Query parameters (like `&t=30s` for timestamps) are automatically stripped.
+</Info>
+
+## Advanced: Batch Tracking
+
+Track multiple YouTube videos:
+
+```javascript
+const videos = [
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  'https://www.youtube.com/watch?v=9bZkp7q19f0',
+  'https://www.youtube.com/watch?v=jNQXAC9IVRw'
+];
+
+async function trackBatch(urls, duration = 7) {
+  const results = await Promise.all(
+    urls.map(video_link =>
+      fetch('https://contentstats.io/api/v1/videos/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.CONTENTSTATS_API_KEY
+        },
+        body: JSON.stringify({ video_link, duration_days: duration })
+      }).then(r => r.json())
+    )
+  );
+  
+  return results;
+}
+
+const tracked = await trackBatch(videos);
+console.log(`Tracking ${tracked.length} YouTube videos`);
+```
+
+## Export Data
+
+### Export to CSV
+
+```python
+import csv
+import requests
+
+def export_to_csv(video_id, filename='youtube_stats.csv'):
+    response = requests.get(
+        f'https://contentstats.io/api/v1/videos/{video_id}',
+        headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+    )
+    
+    video = response.json()
+    
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Timestamp', 'Views', 'Likes', 'Comments'])
+        
+        for snapshot in video['snapshots']:
+            writer.writerow([
+                snapshot['snapshot_time'],
+                snapshot['views'],
+                snapshot['likes'],
+                snapshot['comments']
+            ])
+    
+    print(f"Exported to {filename}")
+
+export_to_csv('cm5xyz789')
+```
+
+### Visualize with Chart
+
+```javascript
+import Chart from 'chart.js/auto';
+
+async function visualizeGrowth(videoId) {
+  const response = await fetch(
+    `https://contentstats.io/api/v1/videos/${videoId}`,
+    { headers: { 'X-API-Key': process.env.CONTENTSTATS_API_KEY } }
+  );
+  
+  const video = await response.json();
+  
+  new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels: video.snapshots.map(s => new Date(s.snapshot_time).toLocaleString()),
+      datasets: [{
+        label: 'Views',
+        data: video.snapshots.map(s => parseInt(s.views)),
+        borderColor: 'rgb(75, 192, 192)'
+      }]
+    }
+  });
+}
+```
+
+## Cost Examples
+
+Tracking cost calculation:
+
+| Duration | Snapshots | Total Cost |
+|----------|-----------|------------|
+| 1 day | 24 | $0.36 |
+| 3 days | 72 | $1.08 |
+| 7 days | 168 | $2.52 |
+| 14 days | 336 | $5.04 |
+| 30 days | 720 | $10.80 |
+
+<Info>
+  Your **$5 free credit** covers 333 snapshots (~14 days of tracking).
+</Info>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Error: Video not found">
+    **Causes:**
+    - Video is private or deleted
+    - Invalid URL format
+    - Age-restricted video
+    
+    **Fix:** Verify the video is public and accessible without login
+  </Accordion>
+  
+  <Accordion title="Views not updating">
+    **Cause:** YouTube sometimes caches view counts
+    
+    **Expected:** View counts may stay the same for a few hours, especially on older videos
+  </Accordion>
+  
+  <Accordion title="No snapshots appearing">
+    **Cause:** First snapshot takes up to 1 hour
+    
+    **Fix:** Wait 60 minutes after starting tracking
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="clock" title="Poll Hourly">
+    Don't poll faster than hourly — snapshots update every 60 minutes:
+    
+    ```javascript
+    // Poll every hour for new snapshots
+    setInterval(() => {
+      fetchVideoStats(videoId);
+    }, 60 * 60 * 1000);
+    ```
+  </Accordion>
+  
+  <Accordion icon="list" title="Track High-Value Videos">
+    Focus on videos that matter:
+    - Your own content
+    - Competitor best performers
+    - Trending videos in your niche
+    - Influencer campaign videos
+  </Accordion>
+  
+  <Accordion icon="money-bill" title="Monitor Balance">
+    Check balance before tracking:
+    
+    ```bash
+    curl https://contentstats.io/api/v1/usage \
+      -H "X-API-Key: YOUR_KEY"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Use Cases
+
+### Monitor Your Own Videos
+
+```javascript
+const myVideos = [
+  'https://www.youtube.com/watch?v=VIDEO1',
+  'https://www.youtube.com/watch?v=VIDEO2'
+];
+
+// Track all your videos
+myVideos.forEach(url => trackVideo(url, 30));
+```
+
+### Competitive Analysis
+
+```javascript
+const competitors = [
+  { name: 'Competitor A', url: 'https://youtube.com/...' },
+  { name: 'Competitor B', url: 'https://youtube.com/...' }
+];
+
+// Track competitor performance
+competitors.forEach(comp => {
+  trackVideo(comp.url, 7);
+  console.log(`Tracking ${comp.name}`);
+});
+```
+
+### Trend Research
+
+```javascript
+// Track trending videos to find patterns
+const trendingUrls = await getTrendingVideos('tech');
+
+trendingUrls.forEach(url => trackVideo(url, 3));
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="YouTube Analytics Alternative"
+    icon="arrows-rotate"
+    href="/guides/youtube/youtube-analytics-alternative"
+  >
+    Compare with YouTube Data API
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/videos/track-video"
+  >
+    Complete API docs
+  </Card>
+  <Card
+    title="Bot Detection"
+    icon="shield"
+    href="/guides/general/bot-detection"
+  >
+    Understanding bot analysis
+  </Card>
+  <Card
+    title="Automate Analytics"
+    icon="robot"
+    href="/guides/general/automate-analytics"
+  >
+    Build automated tracking
+  </Card>
+</CardGroup>

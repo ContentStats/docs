@@ -1,0 +1,418 @@
+---
+title: "Stop Video"
+api: "POST /api/v1/videos/{id}/stop"
+description: "Stop tracking a video early to save credits. Data is preserved."
+---
+
+## Endpoint
+
+```http
+POST https://contentstats.io/api/v1/videos/{id}/stop
+```
+
+Stop tracking a video before the scheduled duration ends. Useful when you've collected enough data or want to save credits.
+
+<Note>
+  All collected snapshots are preserved. You only pay for snapshots already collected.
+</Note>
+
+## Authentication
+
+<ParamField header="X-API-Key" type="string" required>
+  Your API key from the [dashboard](https://contentstats.io/dashboard/api-keys)
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The video ID from [Track Video](/api-reference/videos/track-video)
+  
+  **Example:** `cm5abc123def`
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Whether operation succeeded
+</ResponseField>
+
+<ResponseField name="id" type="string">
+  Video identifier
+</ResponseField>
+
+<ResponseField name="job_id" type="string">
+  External job ID
+</ResponseField>
+
+<ResponseField name="video_link" type="string">
+  Video URL
+</ResponseField>
+
+<ResponseField name="previous_status" type="string">
+  Status before stopping (usually `monitoring`)
+</ResponseField>
+
+<ResponseField name="new_status" type="string">
+  New status (always `completed`)
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://contentstats.io/api/v1/videos/cm5abc123def/stop" \
+  -H "X-API-Key: cs_live_YOUR_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  'https://contentstats.io/api/v1/videos/cm5abc123def/stop',
+  {
+    method: 'POST',
+    headers: {
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    }
+  }
+);
+
+const data = await response.json();
+
+if (data.success) {
+  console.log('Tracking stopped successfully');
+  console.log('Status changed:', data.previous_status, '→', data.new_status);
+}
+```
+
+```python Python
+import requests
+import os
+
+video_id = 'cm5abc123def'
+
+response = requests.post(
+    f'https://contentstats.io/api/v1/videos/{video_id}/stop',
+    headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+)
+
+data = response.json()
+
+if data['success']:
+    print(f"Stopped tracking: {data['video_link']}")
+```
+
+```php PHP
+<?php
+$videoId = 'cm5abc123def';
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+    CURLOPT_URL => "https://contentstats.io/api/v1/videos/{$videoId}/stop",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => [
+        'X-API-Key: ' . getenv('CONTENTSTATS_API_KEY')
+    ]
+]);
+
+$response = curl_exec($curl);
+$data = json_decode($response, true);
+
+if ($data['success']) {
+    echo "Tracking stopped\n";
+}
+?>
+```
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "success": true,
+  "id": "cm5abc123def",
+  "job_id": "job_xyz789",
+  "video_link": "https://www.tiktok.com/@user/video/7234567890",
+  "previous_status": "monitoring",
+  "new_status": "completed"
+}
+```
+
+## When to Stop Early
+
+<AccordionGroup>
+  <Accordion icon="check" title="Got Enough Data">
+    You've collected sufficient data for your analysis:
+    
+    ```javascript
+    async function stopIfEnoughData(videoId, minSnapshots = 24) {
+      const video = await getVideo(videoId);
+      
+      if (video.snapshots.length >= minSnapshots) {
+        await stopVideo(videoId);
+        console.log('Stopped: Collected', video.snapshots.length, 'snapshots');
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="robot" title="High Bot Activity Detected">
+    Video shows clear bot activity:
+    
+    ```javascript
+    async function stopIfBotDetected(videoId, threshold = 0.7) {
+      const video = await getVideo(videoId);
+      
+      if (video.bot_confidence > threshold) {
+        await stopVideo(videoId);
+        console.log('Stopped: High bot confidence', video.bot_confidence);
+        return { botted: true, score: video.bot_confidence };
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="trash" title="Video Deleted">
+    Platform removed the video:
+    
+    ```javascript
+    async function stopIfDeleted(videoId) {
+      const video = await getVideo(videoId);
+      
+      if (video.is_deleted) {
+        await stopVideo(videoId);
+        console.log('Stopped: Video was deleted');
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="money-bill" title="Save Budget">
+    Conserve credits for other videos:
+    
+    ```javascript
+    async function stopLowPriorityVideos() {
+      const videos = await listVideos({ status: 'monitoring' });
+      
+      // Stop videos with low engagement
+      for (const video of videos.videos) {
+        if (video.snapshots.length >= 24) {
+          const latest = video.snapshots[video.snapshots.length - 1];
+          const engagementRate = calculateEngagement(latest);
+          
+          if (engagementRate < 0.01) { // Less than 1%
+            await stopVideo(video.id);
+            console.log('Stopped low-engagement video:', video.id);
+          }
+        }
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Cost Savings
+
+```javascript
+function calculateSavings(video) {
+  const snapshotsCollected = video.snapshots.length;
+  const totalPlanned = video.monitoring_duration_days * 24;
+  const snapshotsSaved = totalPlanned - snapshotsCollected;
+  const costSaved = snapshotsSaved * 0.015;
+  
+  return {
+    collected: snapshotsCollected,
+    planned: totalPlanned,
+    saved: snapshotsSaved,
+    costSaved: costSaved.toFixed(2)
+  };
+}
+
+// Example: Stopped after 3 days of 7-day tracking
+const savings = calculateSavings({
+  snapshots: new Array(72), // 3 days × 24 hours
+  monitoring_duration_days: 7
+});
+
+console.log(`Saved ${savings.saved} snapshots ($${savings.costSaved})`);
+// Output: Saved 96 snapshots ($1.44)
+```
+
+## Batch Stop
+
+Stop multiple videos at once:
+
+```javascript
+async function batchStopVideos(videoIds) {
+  const results = await Promise.all(
+    videoIds.map(id => 
+      fetch(`https://contentstats.io/api/v1/videos/${id}/stop`, {
+        method: 'POST',
+        headers: { 'X-API-Key': apiKey }
+      }).then(r => r.json())
+    )
+  );
+  
+  const stopped = results.filter(r => r.success).length;
+  console.log(`Stopped ${stopped}/${videoIds.length} videos`);
+  
+  return results;
+}
+
+// Stop all completed or high-bot videos
+const videos = await listVideos();
+const toStop = videos.videos
+  .filter(v => v.status === 'monitoring')
+  .filter(v => v.bot_confidence > 0.7 || v.days_remaining < 0.5)
+  .map(v => v.id);
+
+await batchStopVideos(toStop);
+```
+
+## What Happens After Stopping
+
+1. **Status Changes**: `monitoring` → `completed`
+2. **Data Preserved**: All snapshots remain accessible
+3. **No Future Charges**: No more snapshots collected
+4. **Billing**: Only charged for snapshots already collected
+5. **API Access**: Video data still accessible via [Get Video](/api-reference/videos/get-video)
+
+```javascript
+// After stopping, data is still accessible
+const stoppedVideo = await getVideo('cm5abc123def');
+
+console.log('Status:', stoppedVideo.status); // "completed"
+console.log('Snapshots:', stoppedVideo.snapshots.length); // All preserved
+console.log('Bot analysis:', stoppedVideo.bot_analysis); // Still available
+```
+
+## Error Responses
+
+### 404 Not Found
+
+```json
+{
+  "error": "Video not found"
+}
+```
+
+Invalid video ID or accessing another organization's video.
+
+### 400 Bad Request
+
+```json
+{
+  "error": "Video is not being monitored"
+}
+```
+
+Video status is not `monitoring`. Cannot stop videos that are already `completed`, `paused`, or `cancelled`.
+
+### 403 Forbidden
+
+```json
+{
+  "error": "Access denied"
+}
+```
+
+Video belongs to a different organization.
+
+## Resume vs. Restart
+
+<Note>
+  **Cannot Resume**: Once stopped, tracking cannot be resumed. To track again, create a new tracking job with [Track Video](/api-reference/videos/track-video).
+</Note>
+
+```javascript
+// ❌ Cannot do this
+await stopVideo('cm5abc123');
+await resumeVideo('cm5abc123'); // No resume endpoint
+
+// ✅ Must create new tracking job
+await stopVideo('cm5abc123');
+const newJob = await trackVideo({
+  video_link: originalUrl,
+  duration_days: 7
+}); // New ID, fresh tracking
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="triangle-exclamation" title="Confirm Before Stopping">
+    Add confirmation for user-initiated stops:
+    
+    ```javascript
+    async function stopWithConfirmation(videoId) {
+      const video = await getVideo(videoId);
+      const savings = calculateSavings(video);
+      
+      const confirmed = confirm(
+        `Stop tracking ${video.video_link}?\n` +
+        `Collected: ${savings.collected} snapshots\n` +
+        `Remaining: ${savings.saved} snapshots ($${savings.costSaved} saved)`
+      );
+      
+      if (confirmed) {
+        await stopVideo(videoId);
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="database" title="Log Stop Reasons">
+    Track why videos were stopped:
+    
+    ```javascript
+    async function stopWithReason(videoId, reason) {
+      const result = await stopVideo(videoId);
+      
+      // Log to your database
+      await db.stoppedVideos.create({
+        videoId,
+        reason,
+        stoppedAt: new Date(),
+        snapshotsCollected: result.snapshots_count
+      });
+      
+      return result;
+    }
+    
+    await stopWithReason('cm5abc123', 'High bot activity detected');
+    ```
+  </Accordion>
+  
+  <Accordion icon="bell" title="Notify on Auto-Stop">
+    Alert users when videos are auto-stopped:
+    
+    ```javascript
+    async function autoStopAndNotify(videoId, reason) {
+      await stopVideo(videoId);
+      
+      // Send email notification
+      await sendEmail({
+        to: user.email,
+        subject: 'Video tracking stopped',
+        body: `Tracking stopped for ${video.video_link}. Reason: ${reason}`
+      });
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Get Video Data" icon="circle-info" href="/api-reference/videos/get-video">
+    Access stopped video's data
+  </Card>
+  <Card title="Track New Video" icon="play" href="/api-reference/videos/track-video">
+    Start tracking another video
+  </Card>
+  <Card title="List Videos" icon="list" href="/api-reference/videos/list-videos">
+    View all your videos
+  </Card>
+  <Card title="Get Usage" icon="chart-bar" href="/api-reference/usage/get-usage">
+    Check balance and usage
+  </Card>
+</CardGroup>

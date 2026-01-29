@@ -1,0 +1,570 @@
+---
+title: "TikTok Analytics API for Developers"
+seoTitle: "TikTok Analytics API | Developer Guide & Code Examples 2026"
+description: "Complete TikTok analytics API for developers. Track views, likes, comments, shares programmatically. No approval needed. Get hourly snapshots with bot detection."
+---
+
+## TikTok Analytics API Overview
+
+Build TikTok analytics into your app with our developer-friendly API. Track any public TikTok video and get hourly performance snapshots without dealing with TikTok's official API restrictions.
+
+<Note>
+  **No TikTok Business Account or API approval required.** Start building in minutes.
+</Note>
+
+## Why Developers Choose Us
+
+<Tabs>
+  <Tab title="Official TikTok API">
+    ### TikTok's Requirements:
+    - 🔴 Business account verification
+    - 🔴 App review (2-8 weeks wait)
+    - 🔴 Strict content policies
+    - 🔴 Limited to own videos
+    - 🔴 Rate limits + quotas
+    - 🔴 Complex OAuth flow
+  </Tab>
+  
+  <Tab title="ContentStats.io API">
+    ### Our Approach:
+    - ✅ Simple API key auth
+    - ✅ Instant access
+    - ✅ Track ANY public video
+    - ✅ Hourly updates
+    - ✅ Built-in bot detection
+    - ✅ RESTful design
+  </Tab>
+</Tabs>
+
+## Quick Integration
+
+Get started with 3 lines of code:
+
+<CodeGroup>
+  ```javascript JavaScript/TypeScript
+  const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    },
+    body: JSON.stringify({
+      video_link: 'https://www.tiktok.com/@user/video/123',
+      duration_days: 7
+    })
+  });
+  
+  const data = await response.json();
+  console.log('Video ID:', data.id);
+  ```
+
+  ```python Python
+  import requests
+  import os
+
+  response = requests.post(
+      'https://contentstats.io/api/v1/videos/track',
+      headers={
+          'Content-Type': 'application/json',
+          'X-API-Key': os.environ['CONTENTSTATS_API_KEY']
+      },
+      json={
+          'video_link': 'https://www.tiktok.com/@user/video/123',
+          'duration_days': 7
+      }
+  )
+
+  data = response.json()
+  print(f"Video ID: {data['id']}")
+  ```
+
+  ```go Go
+  package main
+
+  import (
+      "bytes"
+      "encoding/json"
+      "net/http"
+      "os"
+  )
+
+  func trackVideo() {
+      payload := map[string]interface{}{
+          "video_link":    "https://www.tiktok.com/@user/video/123",
+          "duration_days": 7,
+      }
+      
+      body, _ := json.Marshal(payload)
+      
+      req, _ := http.NewRequest(
+          "POST",
+          "https://contentstats.io/api/v1/videos/track",
+          bytes.NewBuffer(body),
+      )
+      
+      req.Header.Set("Content-Type", "application/json")
+      req.Header.Set("X-API-Key", os.Getenv("CONTENTSTATS_API_KEY"))
+      
+      client := &http.Client{}
+      resp, _ := client.Do(req)
+      defer resp.Body.Close()
+  }
+  ```
+
+  ```ruby Ruby
+  require 'net/http'
+  require 'json'
+
+  uri = URI('https://contentstats.io/api/v1/videos/track')
+  
+  request = Net::HTTP::Post.new(uri)
+  request['Content-Type'] = 'application/json'
+  request['X-API-Key'] = ENV['CONTENTSTATS_API_KEY']
+  request.body = {
+    video_link: 'https://www.tiktok.com/@user/video/123',
+    duration_days: 7
+  }.to_json
+  
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+    http.request(request)
+  end
+  
+  data = JSON.parse(response.body)
+  puts "Video ID: #{data['id']}"
+  ```
+</CodeGroup>
+
+## API Endpoints
+
+### Track Video
+```http
+POST /api/v1/videos/track
+```
+
+Start tracking a TikTok video.
+
+**Request:**
+```json
+{
+  "video_link": "https://www.tiktok.com/@user/video/1234567890",
+  "duration_days": 7
+}
+```
+
+**Response:**
+```json
+{
+  "id": "cm5abc123",
+  "video_link": "https://www.tiktok.com/@user/video/1234567890",
+  "platform": "tiktok",
+  "status": "monitoring",
+  "estimated_cost": 2.52
+}
+```
+
+### Get Video Data
+```http
+GET /api/v1/videos/{id}
+```
+
+Retrieve snapshots and bot analysis.
+
+**Response:**
+```json
+{
+  "id": "cm5abc123",
+  "snapshots": [
+    {
+      "snapshot_time": "2024-01-29T10:00:00Z",
+      "views": "1250000",
+      "likes": "185000",
+      "comments": "4200",
+      "shares": "12500",
+      "saves": "8900"
+    }
+  ],
+  "bot_analysis": {
+    "overall_confidence": 0.18,
+    "engagement_velocity_score": 0.15,
+    "comment_quality_score": 0.21
+  }
+}
+```
+
+### List Videos
+```http
+GET /api/v1/videos?platform=tiktok
+```
+
+Get all tracked videos filtered by platform.
+
+### Stop Tracking
+```http
+POST /api/v1/videos/{id}/stop
+```
+
+Stop tracking early to save credits.
+
+<Card title="Full API Reference" icon="book" href="/api-reference/introduction">
+  View complete API documentation with all endpoints
+</Card>
+
+## SDK Examples
+
+### React Integration
+
+```tsx
+import { useState, useEffect } from 'react';
+
+interface TikTokSnapshot {
+  views: string;
+  likes: string;
+  comments: string;
+  shares: string;
+  saves: string;
+  snapshot_time: string;
+}
+
+function TikTokTracker() {
+  const [videoId, setVideoId] = useState<string>('');
+  const [snapshots, setSnapshots] = useState<TikTokSnapshot[]>([]);
+  
+  const trackVideo = async (url: string) => {
+    const response = await fetch('/api/track-tiktok', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video_link: url, duration_days: 7 })
+    });
+    
+    const data = await response.json();
+    setVideoId(data.id);
+  };
+  
+  useEffect(() => {
+    if (!videoId) return;
+    
+    const fetchSnapshots = async () => {
+      const response = await fetch(`/api/videos/${videoId}`);
+      const data = await response.json();
+      setSnapshots(data.snapshots);
+    };
+    
+    // Poll every 5 minutes for new snapshots
+    const interval = setInterval(fetchSnapshots, 5 * 60 * 1000);
+    fetchSnapshots();
+    
+    return () => clearInterval(interval);
+  }, [videoId]);
+  
+  return (
+    <div>
+      <input 
+        placeholder="TikTok URL" 
+        onBlur={(e) => trackVideo(e.target.value)}
+      />
+      
+      {snapshots.map((snap, i) => (
+        <div key={i}>
+          <p>Views: {snap.views}</p>
+          <p>Likes: {snap.likes}</p>
+          <p>Time: {new Date(snap.snapshot_time).toLocaleString()}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Next.js API Route
+
+```typescript
+// app/api/track-tiktok/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  const { video_link, duration_days } = await request.json();
+  
+  const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY!
+    },
+    body: JSON.stringify({ video_link, duration_days })
+  });
+  
+  const data = await response.json();
+  return NextResponse.json(data);
+}
+```
+
+### Python Flask Integration
+
+```python
+from flask import Flask, request, jsonify
+import requests
+import os
+
+app = Flask(__name__)
+
+@app.route('/api/track-tiktok', methods=['POST'])
+def track_tiktok():
+    data = request.get_json()
+    
+    response = requests.post(
+        'https://contentstats.io/api/v1/videos/track',
+        headers={
+            'Content-Type': 'application/json',
+            'X-API-Key': os.environ['CONTENTSTATS_API_KEY']
+        },
+        json={
+            'video_link': data['video_link'],
+            'duration_days': data.get('duration_days', 7)
+        }
+    )
+    
+    return jsonify(response.json())
+
+@app.route('/api/videos/<video_id>', methods=['GET'])
+def get_video(video_id):
+    response = requests.get(
+        f'https://contentstats.io/api/v1/videos/{video_id}',
+        headers={'X-API-Key': os.environ['CONTENTSTATS_API_KEY']}
+    )
+    
+    return jsonify(response.json())
+```
+
+## Data Structure
+
+### Snapshot Object
+
+```typescript
+interface Snapshot {
+  id: string;
+  snapshot_id: string;
+  snapshot_time: string; // ISO 8601
+  views: string; // BigInt as string
+  likes: string;
+  comments: string;
+  shares: string | null;
+  saves: string | null;
+  provider: string;
+}
+```
+
+### Bot Analysis Object
+
+```typescript
+interface BotAnalysis {
+  overall_confidence: number; // 0.0 - 1.0
+  engagement_velocity_score: number;
+  comment_quality_score: number;
+  timing_pattern_score: number;
+  ratio_analysis_score: number;
+  channel_context_score: number;
+  patterns: object | null;
+  flags: BotFlag[];
+}
+
+interface BotFlag {
+  type: string;
+  severity: 'low' | 'medium' | 'high';
+  description: string;
+  evidence: object;
+  detected_at: string;
+}
+```
+
+## Rate Limiting
+
+| Plan | Rate Limit | Concurrent Videos |
+|------|-----------|-------------------|
+| **Free** | 60 req/min | 10 |
+| **Pro** | 300 req/min | 100 |
+| **Enterprise** | Custom | Unlimited |
+
+<Info>
+  Rate limit headers included in every response:
+  - `X-RateLimit-Limit`
+  - `X-RateLimit-Remaining`
+  - `X-RateLimit-Reset`
+</Info>
+
+## Error Handling
+
+```javascript
+try {
+  const response = await fetch('https://contentstats.io/api/v1/videos/track', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': process.env.CONTENTSTATS_API_KEY
+    },
+    body: JSON.stringify({ video_link, duration_days: 7 })
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    
+    switch (response.status) {
+      case 401:
+        throw new Error('Invalid API key');
+      case 402:
+        throw new Error(`Insufficient balance: ${error.balance}`);
+      case 404:
+        throw new Error('Video not found or private');
+      case 429:
+        throw new Error('Rate limit exceeded');
+      default:
+        throw new Error(error.error || 'Unknown error');
+    }
+  }
+  
+  const data = await response.json();
+  return data;
+} catch (error) {
+  console.error('TikTok tracking failed:', error.message);
+}
+```
+
+## Webhook Integration (Coming Soon)
+
+Subscribe to events:
+
+```json
+{
+  "events": ["snapshot.created", "tracking.completed", "bot.detected"],
+  "url": "https://your-app.com/webhooks/contentstats",
+  "secret": "whsec_your_secret"
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="database" title="Cache Responses">
+    Cache video data locally to reduce API calls:
+    
+    ```javascript
+    const cache = new Map();
+    
+    async function getVideo(id) {
+      if (cache.has(id)) {
+        return cache.get(id);
+      }
+      
+      const data = await fetchVideo(id);
+      cache.set(id, data);
+      
+      return data;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="shield-check" title="Validate Video URLs">
+    Validate TikTok URLs before tracking:
+    
+    ```javascript
+    function isValidTikTokUrl(url) {
+      const patterns = [
+        /^https:\/\/(www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+/,
+        /^https:\/\/vm\.tiktok\.com\/[\w]+/,
+        /^https:\/\/(www\.)?tiktok\.com\/t\/[\w]+/
+      ];
+      
+      return patterns.some(pattern => pattern.test(url));
+    }
+    ```
+  </Accordion>
+  
+  <Accordion icon="clock" title="Poll Efficiently">
+    Don't poll faster than hourly — snapshots update every hour:
+    
+    ```javascript
+    // Bad: Polling every minute
+    setInterval(fetchSnapshots, 60 * 1000); // ❌
+    
+    // Good: Polling every hour
+    setInterval(fetchSnapshots, 60 * 60 * 1000); // ✅
+    ```
+  </Accordion>
+  
+  <Accordion icon="money-bill" title="Monitor Usage">
+    Check balance before tracking to avoid errors:
+    
+    ```javascript
+    const usage = await fetch('https://contentstats.io/api/v1/usage', {
+      headers: { 'X-API-Key': apiKey }
+    }).then(r => r.json());
+    
+    if (usage.balance_usd < estimatedCost) {
+      throw new Error('Insufficient balance');
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Testing
+
+Test with different video types:
+
+```javascript
+const testCases = [
+  {
+    name: 'Viral video',
+    url: 'https://www.tiktok.com/@charlidamelio/video/...',
+    expected: { platform: 'tiktok', status: 'monitoring' }
+  },
+  {
+    name: 'Small creator',
+    url: 'https://www.tiktok.com/@user/video/...',
+    expected: { platform: 'tiktok', status: 'monitoring' }
+  }
+];
+
+for (const test of testCases) {
+  const result = await trackVideo(test.url);
+  console.assert(result.platform === test.expected.platform);
+}
+```
+
+## Performance Tips
+
+- **Batch requests**: Track multiple videos in parallel
+- **Use webhooks**: Get notified instead of polling (coming soon)
+- **Cache aggressively**: Snapshots don't change after creation
+- **Filter early**: Use query parameters to reduce response size
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    Complete API documentation
+  </Card>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/authentication"
+  >
+    API key management
+  </Card>
+  <Card
+    title="Error Handling"
+    icon="triangle-exclamation"
+    href="/api-reference/errors"
+  >
+    Handle errors properly
+  </Card>
+  <Card
+    title="Rate Limits"
+    icon="gauge"
+    href="/api-reference/rate-limits"
+  >
+    Understand rate limiting
+  </Card>
+</CardGroup>

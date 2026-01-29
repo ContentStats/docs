@@ -1,0 +1,141 @@
+---
+title: "Track Instagram Post Performance"
+seoTitle: "How to Track Instagram Post Performance | API Guide 2026"
+description: "Learn how to track Instagram post and reel performance. Get hourly snapshots of likes, comments, and saves without business account requirements."
+---
+
+## Track Instagram Posts & Reels
+
+Monitor Instagram post performance with hourly snapshots of likes, comments, and saves. No business account or Facebook connection required.
+
+## Step-by-Step Guide
+
+<Steps>
+  <Step title="Get API Key">
+    1. Sign up at [contentstats.io](https://contentstats.io/auth/signup)
+    2. Go to [Dashboard → API Keys](https://contentstats.io/dashboard/api-keys)
+    3. Create and copy your API key
+  </Step>
+
+  <Step title="Find Instagram Post URL">
+    Get the URL of any public Instagram post or reel:
+    
+    ```
+    https://www.instagram.com/p/ABC123/
+    https://www.instagram.com/reel/XYZ789/
+    ```
+  </Step>
+
+  <Step title="Start Tracking">
+    ```bash
+    curl -X POST https://contentstats.io/api/v1/videos/track \
+      -H "Content-Type: application/json" \
+      -H "X-API-Key: cs_live_YOUR_KEY" \
+      -d '{
+        "video_link": "https://www.instagram.com/p/ABC123/",
+        "duration_days": 7
+      }'
+    ```
+
+    **Response:**
+    ```json
+    {
+      "id": "cm5insta123",
+      "platform": "instagram",
+      "status": "monitoring",
+      "estimated_cost": 2.52
+    }
+    ```
+  </Step>
+
+  <Step title="Get Performance Data">
+    After 1 hour, retrieve snapshots:
+    
+    ```bash
+    curl https://contentstats.io/api/v1/videos/cm5insta123 \
+      -H "X-API-Key: cs_live_YOUR_KEY"
+    ```
+  </Step>
+</Steps>
+
+## Available Metrics
+
+Track these Instagram metrics hourly:
+
+- **Likes**: Total like count
+- **Comments**: Number of comments
+- **Saves**: Bookmark/save count
+
+## Bot Detection
+
+Each post includes AI-powered bot analysis:
+
+```json
+{
+  "bot_analysis": {
+    "overall_confidence": 0.22,
+    "engagement_velocity_score": 0.18,
+    "comment_quality_score": 0.25,
+    "timing_pattern_score": 0.21
+  }
+}
+```
+
+| Score | Meaning |
+|-------|---------|
+| 0.0 - 0.3 | ✅ Authentic |
+| 0.3 - 0.5 | ⚠️ Suspicious |
+| 0.5 - 0.7 | 🚨 Likely botted |
+| 0.7 - 1.0 | ❌ Definitely botted |
+
+## Use Cases
+
+### Influencer Vetting
+
+```javascript
+async function vetInfluencer(postUrl) {
+  const data = await trackPost(postUrl, 3);
+  
+  // Wait for data collection
+  await sleep(3 * 24 * 60 * 60 * 1000);
+  
+  const post = await getPost(data.id);
+  
+  if (post.bot_confidence > 0.5) {
+    return { approved: false, reason: 'High bot activity' };
+  }
+  
+  return { approved: true };
+}
+```
+
+### Campaign Monitoring
+
+```javascript
+const campaignPosts = [
+  'https://instagram.com/p/POST1/',
+  'https://instagram.com/p/POST2/',
+  'https://instagram.com/p/POST3/'
+];
+
+campaignPosts.forEach(url => trackPost(url, 14));
+```
+
+## Pricing
+
+```
+Cost = Duration (days) × 24 hours × $0.015
+
+7 days: 7 × 24 × $0.015 = $2.52 per post
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Instagram API Guide" href="/guides/instagram/instagram-analytics-api">
+    Developer docs
+  </Card>
+  <Card title="API Restrictions" href="/guides/instagram/instagram-api-restrictions">
+    Compare with official API
+  </Card>
+</CardGroup>

@@ -1,0 +1,421 @@
+---
+title: "Video Performance Tracking"
+seoTitle: "Video Performance Tracking API | Track Social Media Videos"
+description: "Complete guide to video performance tracking across TikTok, YouTube, Instagram, and Twitter. Get hourly metrics, bot detection, and growth analytics."
+---
+
+## Track Video Performance Across All Platforms
+
+Monitor video performance across TikTok, YouTube, Instagram, and Twitter with automated hourly tracking and AI-powered analytics.
+
+## Why Track Video Performance?
+
+<CardGroup cols={2}>
+  <Card title="Data-Driven Decisions" icon="chart-line">
+    Make informed content decisions based on real performance data
+  </Card>
+  <Card title="Competitive Advantage" icon="trophy">
+    Understand what works in your niche before competitors
+  </Card>
+  <Card title="ROI Measurement" icon="dollar-sign">
+    Track campaign performance and calculate accurate ROI
+  </Card>
+  <Card title="Detect Fraud" icon="shield-check">
+    Identify fake engagement with AI-powered bot detection
+  </Card>
+</CardGroup>
+
+## How Video Tracking Works
+
+<Steps>
+  <Step title="Choose Videos to Track">
+    Select videos you want to monitor:
+    - Your own content
+    - Competitor videos
+    - Trending content
+    - Influencer campaigns
+  </Step>
+  
+  <Step title="Set Tracking Duration">
+    Decide how long to track (1-30 days):
+    - **1-3 days**: Quick performance check
+    - **7 days**: Standard campaign monitoring
+    - **14-30 days**: Long-term performance analysis
+  </Step>
+  
+  <Step title="Automatic Data Collection">
+    We collect hourly snapshots automatically:
+    - Views, likes, comments
+    - Platform-specific metrics (shares, saves)
+    - Bot detection scores
+    - Growth patterns
+  </Step>
+  
+  <Step title="Analyze Performance">
+    Access data via API or dashboard:
+    - Growth charts
+    - Engagement rates
+    - Bot analysis
+    - Viral moment detection
+  </Step>
+</Steps>
+
+## Key Metrics by Platform
+
+### TikTok Performance Metrics
+
+```javascript
+const tiktokMetrics = {
+  views: "Total video views",
+  likes: "Hearts/likes count",
+  comments: "Comment count",
+  shares: "Share count",
+  saves: "Bookmark/save count",
+  botScore: "Fake engagement confidence (0-1)"
+};
+```
+
+**Best for:**
+- Viral content analysis
+- Influencer vetting
+- Trend research
+- Algorithm testing
+
+### YouTube Performance Metrics
+
+```javascript
+const youtubeMetrics = {
+  views: "Total view count",
+  likes: "Like count",
+  comments: "Comment count",
+  botScore: "Bot activity detection"
+};
+```
+
+**Best for:**
+- Long-form content analysis
+- SEO performance
+- Subscriber growth correlation
+- Content strategy planning
+
+### Instagram Performance Metrics
+
+```javascript
+const instagramMetrics = {
+  likes: "Like count",
+  comments: "Comment count",
+  saves: "Save/bookmark count",
+  botScore: "Engagement authenticity"
+};
+```
+
+**Best for:**
+- Influencer marketing campaigns
+- Brand content performance
+- Hashtag strategy
+- Aesthetic content testing
+
+### Twitter/X Performance Metrics
+
+```javascript
+const twitterMetrics = {
+  views: "Impression count",
+  likes: "Like count",
+  retweets: "Retweet count",
+  replies: "Reply count",
+  botScore: "Bot farm detection"
+};
+```
+
+**Best for:**
+- Viral tweet analysis
+- News/breaking content
+- Community engagement
+- Amplification patterns
+
+## Example: Complete Tracking Workflow
+
+```javascript
+// 1. Start tracking
+const video = await fetch('https://contentstats.io/api/v1/videos/track', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': process.env.CONTENTSTATS_API_KEY
+  },
+  body: JSON.stringify({
+    video_link: 'https://www.tiktok.com/@creator/video/123',
+    duration_days: 7
+  })
+}).then(r => r.json());
+
+console.log('Tracking:', video.id);
+
+// 2. Wait for first snapshot (1 hour)
+await new Promise(resolve => setTimeout(resolve, 60 * 60 * 1000));
+
+// 3. Get performance data
+const performance = await fetch(
+  `https://contentstats.io/api/v1/videos/${video.id}`,
+  { headers: { 'X-API-Key': apiKey } }
+).then(r => r.json());
+
+// 4. Analyze growth
+const firstSnapshot = performance.snapshots[0];
+const latestSnapshot = performance.snapshots[performance.snapshots.length - 1];
+
+const growth = {
+  views: parseInt(latestSnapshot.views) - parseInt(firstSnapshot.views),
+  likes: parseInt(latestSnapshot.likes) - parseInt(firstSnapshot.likes),
+  hours: performance.snapshots.length
+};
+
+console.log(`Growth after ${growth.hours} hours:`,growth);
+
+// 5. Check bot activity
+if (performance.bot_confidence > 0.5) {
+  console.warn('⚠️ High bot activity detected:', performance.bot_confidence);
+}
+```
+
+## Common Use Cases
+
+### 1. Campaign Performance Tracking
+
+Monitor influencer marketing campaigns:
+
+```javascript
+async function trackCampaign(campaignVideos) {
+  const results = await Promise.all(
+    campaignVideos.map(video =>
+      fetch('https://contentstats.io/api/v1/videos/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey
+        },
+        body: JSON.stringify({
+          video_link: video.url,
+          duration_days: 14
+        })
+      }).then(r => r.json())
+    )
+  );
+  
+  return results.map((r, i) => ({
+    influencer: campaignVideos[i].influencer,
+    trackingId: r.id,
+    platform: r.platform,
+    url: r.video_link
+  }));
+}
+
+const campaign = await trackCampaign([
+  { influencer: '@creator1', url: 'https://tiktok.com/...' },
+  { influencer: '@creator2', url: 'https://youtube.com/...' },
+  { influencer: '@creator3', url: 'https://instagram.com/...' }
+]);
+```
+
+### 2. Competitive Analysis
+
+Track top competitors:
+
+```javascript
+async function trackCompetitors(competitors) {
+  const tracked = [];
+  
+  for (const competitor of competitors) {
+    // Track their top 5 recent videos
+    for (const video of competitor.recentVideos.slice(0, 5)) {
+      const result = await trackVideo(video.url, 7);
+      tracked.push({
+        competitor: competitor.name,
+        video: result
+      });
+    }
+  }
+  
+  return tracked;
+}
+```
+
+### 3. Content Strategy Research
+
+Identify winning content patterns:
+
+```javascript
+async function researchContentStrategy(niche) {
+  // Get trending videos in niche
+  const trendingVideos = await getTrendingInNiche(niche);
+  
+  // Track top 20 performers
+  const tracked = await Promise.all(
+    trendingVideos.slice(0, 20).map(v => trackVideo(v.url, 3))
+  );
+  
+  // Analyze after 3 days
+  setTimeout(async () => {
+    const analysis = await analyzeTrendingPatterns(tracked);
+    console.log('Winning patterns:', analysis);
+  }, 3 * 24 * 60 * 60 * 1000);
+}
+```
+
+### 4. ROI Measurement
+
+Calculate campaign ROI:
+
+```javascript
+function calculateROI(video, campaignCost) {
+  const snapshots = video.snapshots;
+  const latest = snapshots[snapshots.length - 1];
+  
+  // Estimate value (customize per business)
+  const viewValue = 0.01; // $0.01 per view
+  const engagementValue = 0.05; // $0.05 per engagement
+  
+  const views = parseInt(latest.views);
+  const engagement = parseInt(latest.likes) + parseInt(latest.comments);
+  
+  const estimatedValue = (views * viewValue) + (engagement * engagementValue);
+  const roi = ((estimatedValue - campaignCost) / campaignCost) * 100;
+  
+  return {
+    cost: campaignCost,
+    estimatedValue,
+    roi: roi.toFixed(2) + '%'
+  };
+}
+```
+
+## Performance Insights
+
+### Growth Rate Analysis
+
+```javascript
+function analyzeGrowthRate(snapshots) {
+  const hourlyGrowth = [];
+  
+  for (let i = 1; i < snapshots.length; i++) {
+    const current = snapshots[i];
+    const previous = snapshots[i - 1];
+    
+    hourlyGrowth.push({
+      hour: i,
+      viewGrowth: parseInt(current.views) - parseInt(previous.views),
+      likeGrowth: parseInt(current.likes) - parseInt(previous.likes),
+      commentGrowth: parseInt(current.comments) - parseInt(previous.comments)
+    });
+  }
+  
+  // Find peak growth hour
+  const peakHour = hourlyGrowth.reduce((max, hour) =>
+    hour.viewGrowth > max.viewGrowth ? hour : max
+  );
+  
+  return {
+    hourlyGrowth,
+    peakHour,
+    avgHourlyViews: hourlyGrowth.reduce((sum, h) => sum + h.viewGrowth, 0) / hourlyGrowth.length
+  };
+}
+```
+
+### Engagement Quality Score
+
+```javascript
+function calculateEngagementQuality(snapshot, botConfidence) {
+  const views = parseInt(snapshot.views);
+  const likes = parseInt(snapshot.likes);
+  const comments = parseInt(snapshot.comments);
+  
+  // Calculate engagement rate
+  const engagementRate = ((likes + comments) / views) * 100;
+  
+  // Adjust for bot activity
+  const authenticEngagement = engagementRate * (1 - botConfidence);
+  
+  return {
+    rawEngagementRate: engagementRate.toFixed(2) + '%',
+    authenticEngagementRate: authenticEngagement.toFixed(2) + '%',
+    botPenalty: (botConfidence * 100).toFixed(1) + '%'
+  };
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion icon="target" title="Set Clear Goals">
+    Define what you're tracking for:
+    - **Awareness**: Focus on views and reach
+    - **Engagement**: Track likes, comments, shares
+    - **Conversions**: Monitor click-through and saves
+    - **Authenticity**: Check bot scores
+  </Accordion>
+  
+  <Accordion icon="clock" title="Choose Right Duration">
+    Match duration to content type:
+    - **News/Trending**: 1-3 days
+    - **Product launches**: 7-14 days
+    - **Evergreen content**: 14-30 days
+    - **Campaign monitoring**: 7-14 days
+  </Accordion>
+  
+  <Accordion icon="chart-line" title="Compare Benchmarks">
+    Track multiple videos to establish benchmarks:
+    
+    ```javascript
+    const benchmark = {
+      avgViews24h: 50000,
+      avgEngagementRate: 3.5,
+      acceptableBotScore: 0.3
+    };
+    
+    function compareTooBenchmark(video, benchmark) {
+      const latest = video.snapshots[video.snapshots.length - 1];
+      const views24h = calculateViews24h(video.snapshots);
+      
+      return {
+        viewsVsBenchmark: (views24h / benchmark.avgViews24h * 100).toFixed(0) + '%',
+        botScore: video.bot_confidence < benchmark.acceptableBotScore ? '✅' : '⚠️'
+      };
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Platform-Specific Guides
+
+<CardGroup cols={2}>
+  <Card title="TikTok Tracking" href="/guides/tiktok/track-tiktok-videos">
+    Track TikTok videos
+  </Card>
+  <Card title="YouTube Tracking" href="/guides/youtube/get-youtube-stats">
+    Monitor YouTube performance
+  </Card>
+  <Card title="Instagram Tracking" href="/guides/instagram/track-instagram-performance">
+    Track Instagram posts
+  </Card>
+  <Card title="API Reference" href="/api-reference/videos/track-video">
+    Complete API docs
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Hourly Tracking Guide" href="/guides/general/hourly-tracking">
+    Benefits of hourly snapshots
+  </Card>
+  <Card title="Automate Analytics" href="/guides/general/automate-analytics">
+    Build automated systems
+  </Card>
+  <Card title="Real-Time Analytics" href="/guides/general/real-time-analytics">
+    Set up live dashboards
+  </Card>
+  <Card title="Quickstart" href="/quickstart">
+    Start tracking now
+  </Card>
+</CardGroup>
