@@ -63,63 +63,6 @@ Response:
 }
 ```
 
-## SDKs & Libraries
-
-<Tabs>
-  <Tab title="JavaScript/TypeScript">
-    ```bash
-    npm install @contentstats/sdk
-    ```
-    
-    ```javascript
-    import { ContentStats } from '@contentstats/sdk';
-    
-    const client = new ContentStats('cs_live_YOUR_KEY');
-    const video = await client.videos.track({
-      video_link: 'https://tiktok.com/@user/video/123',
-      duration_days: 7
-    });
-    ```
-  </Tab>
-  
-  <Tab title="Python">
-    ```bash
-    pip install contentstats
-    ```
-    
-    ```python
-    from contentstats import ContentStats
-    
-    client = ContentStats('cs_live_YOUR_KEY')
-    video = client.videos.track(
-        video_link='https://tiktok.com/@user/video/123',
-        duration_days=7
-    )
-    ```
-  </Tab>
-  
-  <Tab title="PHP">
-    ```bash
-    composer require contentstats/sdk
-    ```
-    
-    ```php
-    <?php
-    use ContentStats\Client;
-    
-    $client = new Client('cs_live_YOUR_KEY');
-    $video = $client->videos->track([
-        'video_link' => 'https://tiktok.com/@user/video/123',
-        'duration_days' => 7
-    ]);
-    ```
-  </Tab>
-</Tabs>
-
-<Note>
-  SDKs coming soon! For now, use the REST API directly.
-</Note>
-
 ## Rate Limiting
 
 | Plan | Rate Limit |
